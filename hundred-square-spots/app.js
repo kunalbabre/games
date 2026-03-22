@@ -17,6 +17,7 @@ let paletteColors = [...COLORS];
 let selectedColor = paletteColors[0];
 let gridState = new Map(); // Num -> ColorValue
 let history = [];
+const STORAGE_KEY = 'hundred-square-spots:saved-boards';
 
 const grid = document.getElementById('hundredGrid');
 const palette = document.getElementById('palette');
@@ -25,6 +26,146 @@ const customColorInput = document.getElementById('customColorInput');
 const addColorBtn = document.getElementById('addColorBtn');
 const brushLabel = document.getElementById('brushLabel');
 const gridStatus = document.getElementById('gridStatus');
+const saveNameInput = document.getElementById('saveNameInput');
+const saveBoardBtn = document.getElementById('saveBoardBtn');
+const savedBoardsList = document.getElementById('savedBoardsList');
+
+function getSavedBoards() {
+  try {
+    return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function setSavedBoards(savedBoards) {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(savedBoards));
+}
+
+function formatSavedBoardTime(savedAt) {
+  return new Date(savedAt).toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
+  });
+}
+
+function collectBoardSnapshot() {
+  return {
+    paletteColors,
+    selectedColorId: selectedColor.id,
+    tiles: Array.from(gridState.entries()),
+    savedAt: new Date().toISOString()
+  };
+}
+
+function ensurePaletteColors(colors = []) {
+  const knownValues = new Set(paletteColors.map(color => color.value.toUpperCase()));
+
+  colors.forEach(color => {
+    const normalizedValue = color.value.toUpperCase();
+    if (!knownValues.has(normalizedValue)) {
+      paletteColors.push({
+        id: color.id || `custom-${Date.now()}-${knownValues.size}`,
+        value: normalizedValue,
+        label: color.label || `Custom ${normalizedValue}`
+      });
+      knownValues.add(normalizedValue);
+    }
+  });
+}
+
+function applyGridState() {
+  document.querySelectorAll('.grid-tile').forEach(tile => {
+    const num = Number(tile.dataset.num);
+    const color = gridState.get(num);
+
+    tile.style.background = color || '';
+    tile.classList.toggle('pushed', Boolean(color));
+  });
+}
+
+function loadBoardState(snapshot) {
+  ensurePaletteColors(snapshot.paletteColors || []);
+  gridState = new Map((snapshot.tiles || []).map(([num, color]) => [Number(num), color]));
+  selectedColor = paletteColors.find(color => color.id === snapshot.selectedColorId)
+    || paletteColors.find(color => color.value === (snapshot.paletteColors?.[0]?.value || '').toUpperCase())
+    || paletteColors[0];
+
+  renderPalette();
+  updateBrushLabel();
+  applyGridState();
+  updateStats();
+}
+
+function renderSavedBoards() {
+  const savedBoards = getSavedBoards();
+  savedBoardsList.innerHTML = '';
+
+  if (savedBoards.length === 0) {
+    savedBoardsList.innerHTML = '<p class="empty-saves">No saved boards yet.</p>';
+    return;
+  }
+
+  savedBoards.forEach(board => {
+    const item = document.createElement('article');
+    item.className = 'saved-board-item';
+
+    const title = document.createElement('strong');
+    title.className = 'saved-board-title';
+    title.textContent = board.name;
+
+    const meta = document.createElement('p');
+    meta.className = 'saved-board-meta';
+    meta.textContent = `${board.tiles.length} painted spot${board.tiles.length === 1 ? '' : 's'} · ${formatSavedBoardTime(board.savedAt)}`;
+
+    const actions = document.createElement('div');
+    actions.className = 'saved-board-actions';
+
+    const loadBtn = document.createElement('button');
+    loadBtn.className = 'icon-btn save-action-btn';
+    loadBtn.type = 'button';
+    loadBtn.textContent = 'Load';
+    loadBtn.onclick = () => {
+      loadBoardState(board);
+      gridStatus.textContent = `Loaded ${board.name}.`;
+    };
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'icon-btn save-action-btn ghost';
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.onclick = () => {
+      const nextBoards = getSavedBoards().filter(savedBoard => savedBoard.id !== board.id);
+      setSavedBoards(nextBoards);
+      renderSavedBoards();
+      gridStatus.textContent = `Deleted ${board.name}.`;
+    };
+
+    actions.append(loadBtn, deleteBtn);
+    item.append(title, meta, actions);
+    savedBoardsList.appendChild(item);
+  });
+}
+
+function saveCurrentBoard() {
+  const trimmedName = saveNameInput.value.trim();
+  const savedBoards = getSavedBoards();
+  const boardName = trimmedName || `Board ${savedBoards.length + 1}`;
+  const snapshot = collectBoardSnapshot();
+  const nextBoard = {
+    id: `board-${Date.now()}`,
+    name: boardName,
+    ...snapshot
+  };
+
+  savedBoards.unshift(nextBoard);
+  setSavedBoards(savedBoards.slice(0, 20));
+  renderSavedBoards();
+  saveNameInput.value = '';
+  gridStatus.textContent = `${boardName} saved to this browser.`;
+}
 
 function getColorLabel(colorValue) {
   return paletteColors.find(color => color.value.toLowerCase() === colorValue.toLowerCase())?.label || colorValue.toUpperCase();
@@ -155,20 +296,16 @@ function initGrid() {
 }
 
 function toggleTile(num, onlyAdd = false) {
-  const tile = grid.querySelector(`[data-num="${num}"]`);
   const existing = gridState.get(num);
 
   if (existing === selectedColor.value) {
     if (!onlyAdd) {
       gridState.delete(num);
-      tile.style.background = "";
-      tile.classList.remove('pushed');
     }
   } else {
     gridState.set(num, selectedColor.value);
-    tile.style.background = selectedColor.value;
-    tile.classList.add('pushed');
   }
+  applyGridState();
   updateStats();
 }
 
@@ -187,27 +324,30 @@ document.querySelectorAll('[data-rule]').forEach(btn => {
       if (rule === 'multiple') match = i % val === 0;
 
       if (match) {
-        const tile = grid.querySelector(`[data-num="${i}"]`);
         gridState.set(i, selectedColor.value);
-        tile.style.background = selectedColor.value;
-        tile.classList.add('pushed');
       }
     }
+    applyGridState();
     updateStats();
   };
 });
 
 document.getElementById('clearBtn').onclick = () => {
   gridState.clear();
-  document.querySelectorAll('.grid-tile').forEach(t => {
-    t.style.background = "";
-    t.classList.remove('pushed');
-  });
+  applyGridState();
   gridStatus.textContent = 'Grid cleared. Pick or add a color to start again.';
   updateStats();
 };
 
 addColorBtn.onclick = addCustomColor;
+saveBoardBtn.onclick = saveCurrentBoard;
+
+saveNameInput.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    saveCurrentBoard();
+  }
+});
 
 window.onmouseup = () => window.isDragging = false;
 
@@ -215,3 +355,4 @@ renderPalette();
 updateBrushLabel();
 initGrid();
 updateStats();
+renderSavedBoards();

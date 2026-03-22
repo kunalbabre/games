@@ -356,6 +356,82 @@ a {
   line-height: 1.3;
 }
 
+.save-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.save-input-wrap {
+  display: grid;
+  gap: 6px;
+  color: var(--ink-600);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.save-input-wrap input {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid rgba(170, 198, 255, 0.18);
+  border-radius: 14px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-900);
+  font: inherit;
+}
+
+.save-input-wrap input::placeholder {
+  color: rgba(199, 210, 240, 0.6);
+}
+
+.save-board-btn {
+  min-height: 42px;
+}
+
+.saved-boards-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.saved-board-item {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(170, 198, 255, 0.12);
+}
+
+.saved-board-title {
+  font-size: 0.92rem;
+}
+
+.saved-board-meta,
+.empty-saves {
+  margin: 0;
+  color: var(--ink-600);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.saved-board-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-action-btn {
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}
+
+.save-action-btn.ghost {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .tool-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -478,32 +554,72 @@ a {
     0 10px 24px rgba(4, 8, 22, 0.22);
 }
 
-.stats-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(150, 181, 255, 0.22) transparent;
-}
-
+.stats-list,
 .side-panel {
   scrollbar-width: thin;
   scrollbar-color: rgba(150, 181, 255, 0.22) transparent;
 }
 
-.stats-list::-webkit-scrollbar {
-  width: 8px;
-}
-
+.stats-list::-webkit-scrollbar,
 .side-panel::-webkit-scrollbar {
   width: 8px;
 }
 
-.stats-list::-webkit-scrollbar-thumb {
+.stats-list::-webkit-scrollbar-thumb,
+.side-panel::-webkit-scrollbar-thumb {
   background: rgba(150, 181, 255, 0.22);
   border-radius: 999px;
 }
 
-.side-panel::-webkit-scrollbar-thumb {
-  background: rgba(150, 181, 255, 0.22);
-  border-radius: 999px;
+@media (min-width: 721px) {
+  .color-palette {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .palette-swatch {
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.24);
+  }
+
+  .palette-swatch.active {
+    transform: scale(1.04);
+    box-shadow: 0 0 16px var(--swatch-color);
+  }
+
+  .palette-tools {
+    gap: 6px;
+  }
+
+  .color-input-wrap {
+    min-height: 40px;
+    padding: 6px 8px;
+  }
+
+  .color-input-wrap span {
+    font-size: 0.8rem;
+  }
+
+  .color-input-wrap input {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .color-input-wrap input::-webkit-color-swatch {
+    border-radius: 8px;
+  }
+
+  .palette-add-btn {
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 0.82rem;
+  }
+
+  .brush-label {
+    font-size: 0.76rem;
+  }
 }
 
 @media (max-width: 1120px) {
@@ -513,19 +629,20 @@ a {
   }
 
   .game-shell {
+    height: auto;
+    min-height: 100vh;
     padding: 22px 18px 28px;
-    display: block;
   }
 
   .game-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
-    margin-bottom: 14px;
   }
 
   .header-right {
-    justify-content: flex-start;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .game-main {
@@ -537,6 +654,10 @@ a {
     min-height: auto;
   }
 
+  .color-palette {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
   .hundred-grid {
     min-height: 540px;
   }
@@ -544,18 +665,17 @@ a {
 
 @media (max-width: 720px) {
   .game-shell {
-    padding: 18px 14px 28px;
+    padding: 16px;
   }
 
   .game-header,
   .side-panel,
   .grid-container {
-    border-radius: 28px;
     padding: 18px;
   }
 
   .header-left h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.7rem, 10vw, 2.4rem);
   }
 
   .control-pill,
@@ -586,6 +706,7 @@ a {
 
   .hundred-grid {
     gap: 4px;
+    min-height: 360px;
   }
 
   .grid-tile {
