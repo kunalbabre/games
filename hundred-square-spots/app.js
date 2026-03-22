@@ -81,7 +81,8 @@ function applyGridState() {
     const num = Number(tile.dataset.num);
     const color = gridState.get(num);
 
-    tile.style.background = color || '';
+    tile.style.removeProperty('background');
+    tile.style.setProperty('--tile-color', color || 'transparent');
     tile.classList.toggle('pushed', Boolean(color));
   });
 }
