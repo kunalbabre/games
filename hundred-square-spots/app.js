@@ -1,33 +1,81 @@
 const COLORS = [
-  { id: 'neon-blue', value: '#4080ff', label: 'Blue' },
-  { id: 'neon-pink', value: '#ff4080', label: 'Pink' },
-  { id: 'neon-mint', value: '#40ff80', label: 'Mint' },
-  { id: 'neon-gold', value: '#ffcc00', label: 'Gold' },
-  { id: 'neon-purple', value: '#a040ff', label: 'Purple' }
+  { id: 'electric-blue', value: '#4b82ff', label: 'Electric Blue' },
+  { id: 'hot-pink', value: '#ff418b', label: 'Hot Pink' },
+  { id: 'mint-pop', value: '#3cf285', label: 'Mint Pop' },
+  { id: 'sun-gold', value: '#ffc61a', label: 'Sun Gold' },
+  { id: 'grape-glow', value: '#9d45ff', label: 'Grape Glow' },
+  { id: 'sky-cyan', value: '#47cfff', label: 'Sky Cyan' },
+  { id: 'peach-flare', value: '#ff8a5b', label: 'Peach Flare' },
+  { id: 'lime-zing', value: '#b9f227', label: 'Lime Zing' },
+  { id: 'berry-pop', value: '#ff5fd2', label: 'Berry Pop' },
+  { id: 'violet-dream', value: '#715dff', label: 'Violet Dream' },
+  { id: 'lava-coral', value: '#ff5c6d', label: 'Lava Coral' },
+  { id: 'aqua-splash', value: '#2ee6c6', label: 'Aqua Splash' }
 ];
 
-let selectedColor = COLORS[0];
+let paletteColors = [...COLORS];
+let selectedColor = paletteColors[0];
 let gridState = new Map(); // Num -> ColorValue
 let history = [];
 
 const grid = document.getElementById('hundredGrid');
 const palette = document.getElementById('palette');
 const statsList = document.getElementById('statsList');
+const customColorInput = document.getElementById('customColorInput');
+const addColorBtn = document.getElementById('addColorBtn');
+const brushLabel = document.getElementById('brushLabel');
+const gridStatus = document.getElementById('gridStatus');
+
+function getColorLabel(colorValue) {
+  return paletteColors.find(color => color.value.toLowerCase() === colorValue.toLowerCase())?.label || colorValue.toUpperCase();
+}
+
+function updateBrushLabel() {
+  brushLabel.textContent = `Current brush: ${selectedColor.label}`;
+}
+
+function selectColor(color) {
+  selectedColor = color;
+  renderPalette();
+  updateBrushLabel();
+}
 
 // Initialize Palette
-function initPalette() {
-  COLORS.forEach(color => {
+function renderPalette() {
+  palette.innerHTML = '';
+
+  paletteColors.forEach(color => {
     const btn = document.createElement('button');
     btn.className = 'palette-swatch';
+    btn.type = 'button';
     btn.style.setProperty('--swatch-color', color.value);
+    btn.title = color.label;
+    btn.setAttribute('aria-label', color.label);
     if (color.id === selectedColor.id) btn.classList.add('active');
-    btn.onclick = () => {
-      document.querySelectorAll('.palette-swatch').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedColor = color;
-    };
+    btn.onclick = () => selectColor(color);
     palette.appendChild(btn);
   });
+}
+
+function addCustomColor() {
+  const value = customColorInput.value.toUpperCase();
+  const existingColor = paletteColors.find(color => color.value.toUpperCase() === value);
+
+  if (existingColor) {
+    selectColor(existingColor);
+    gridStatus.textContent = `${existingColor.label} is ready to use.`;
+    return;
+  }
+
+  const customColor = {
+    id: `custom-${Date.now()}`,
+    value,
+    label: `Custom ${value}`
+  };
+
+  paletteColors.push(customColor);
+  selectColor(customColor);
+  gridStatus.textContent = `${customColor.label} added to your brush palette.`;
 }
 
 // Check Math Rules
@@ -73,7 +121,7 @@ function updateStats() {
   colorGroups.forEach((nums, colorVal) => {
     const item = template.content.cloneNode(true).querySelector('.stat-item');
     item.querySelector('.stat-swatch').style.background = colorVal;
-    item.querySelector('.stat-count').textContent = `${nums.length} spot${nums.length > 1 ? 's' : ''}`;
+    item.querySelector('.stat-count').textContent = `${getColorLabel(colorVal)} · ${nums.length} spot${nums.length > 1 ? 's' : ''}`;
     item.querySelector('.stat-rule').textContent = inferRule(nums);
     
     const mean = nums.reduce((a, b) => a + b, 0) / nums.length;
@@ -155,11 +203,15 @@ document.getElementById('clearBtn').onclick = () => {
     t.style.background = "";
     t.classList.remove('pushed');
   });
+  gridStatus.textContent = 'Grid cleared. Pick or add a color to start again.';
   updateStats();
 };
 
+addColorBtn.onclick = addCustomColor;
+
 window.onmouseup = () => window.isDragging = false;
 
-initPalette();
+renderPalette();
+updateBrushLabel();
 initGrid();
 updateStats();
