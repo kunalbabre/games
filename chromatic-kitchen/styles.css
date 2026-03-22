@@ -484,6 +484,7 @@ a {
   margin: 8px 0;
   min-height: 140px;
   flex: 1;
+  overflow: visible;
 }
 
 .cauldron-glow {
@@ -498,66 +499,83 @@ a {
 
 .cauldron {
   position: relative;
-  width: min(100%, 200px);
-  aspect-ratio: 1 / 0.84;
-  border-radius: 36% 36% 42% 42%;
-  background: linear-gradient(180deg, #404766 0%, #23283f 100%);
+  isolation: isolate;
+  width: min(100%, 218px);
+  aspect-ratio: 1 / 0.8;
+  border-radius: 34% 34% 40% 40% / 24% 24% 48% 48%;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(184, 194, 230, 0.24), transparent 32%),
+    linear-gradient(180deg, #586283 0%, #353d5a 38%, #1a2035 100%);
   box-shadow:
-    inset 0 -24px 40px rgba(4, 8, 22, 0.48),
+    inset 0 12px 18px rgba(255, 255, 255, 0.08),
+    inset 0 -26px 36px rgba(4, 8, 22, 0.56),
     0 22px 30px rgba(4, 8, 22, 0.3),
-    0 0 0 1px rgba(150, 181, 255, 0.08);
+    0 0 0 1px rgba(150, 181, 255, 0.1);
 }
 
 .cauldron::before,
 .cauldron::after {
   content: "";
   position: absolute;
-  top: 28%;
-  width: 38px;
-  height: 64px;
-  border: 8px solid #4d556e;
+  top: 34%;
+  width: 54px;
+  height: 88px;
+  z-index: -1;
+  border: 10px solid rgba(112, 123, 164, 0.72);
   border-radius: 100px;
+  box-shadow:
+    inset 0 0 0 1px rgba(220, 229, 255, 0.08),
+    0 6px 16px rgba(4, 8, 22, 0.22);
 }
 
 .cauldron::before {
-  left: -18px;
+  left: -24px;
+  clip-path: inset(0 34% 0 0);
 }
 
 .cauldron::after {
-  right: -18px;
+  right: -24px;
+  clip-path: inset(0 0 0 34%);
 }
 
 .cauldron-rim {
   position: absolute;
   top: 10px;
-  left: 13px;
-  right: 13px;
-  height: 32px;
+  left: 18px;
+  right: 18px;
+  height: 34px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #737ca3 0%, #40475d 100%);
+  background:
+    linear-gradient(180deg, rgba(191, 202, 239, 0.85) 0%, rgba(108, 119, 159, 0.92) 38%, rgba(57, 64, 88, 0.98) 100%);
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.18),
+    0 8px 16px rgba(4, 8, 22, 0.18);
 }
 
 .mixture-surface {
   position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 22px;
-  height: 54%;
-  border-radius: 34% 34% 28% 28%;
+  left: 16%;
+  right: 16%;
+  bottom: 13%;
+  height: 52%;
+  border-radius: 42% 42% 30% 30% / 34% 34% 22% 22%;
   overflow: hidden;
   background: linear-gradient(180deg, #d7dbe6 0%, #9ea8be 100%);
+  box-shadow:
+    inset 0 10px 16px rgba(255, 255, 255, 0.22),
+    inset 0 -20px 24px rgba(63, 78, 125, 0.24);
   transition: background 220ms ease;
 }
 
 .mixture-surface::before {
   content: "";
   position: absolute;
-  top: -12px;
-  left: 8%;
-  right: 8%;
-  height: 26px;
+  top: 8px;
+  left: 10%;
+  right: 10%;
+  height: 22px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .bubble {
@@ -961,20 +979,20 @@ a {
   }
 
   .cauldron {
-    width: min(100%, 168px);
+    width: min(100%, 180px);
   }
 
   .cauldron::before,
   .cauldron::after {
-    width: 32px;
-    height: 52px;
-    border-width: 7px;
+    width: 42px;
+    height: 68px;
+    border-width: 8px;
   }
 
   .mixture-surface {
-    left: 18px;
-    right: 18px;
-    bottom: 18px;
+    left: 15%;
+    right: 15%;
+    bottom: 12%;
   }
 
   .tray-block {
