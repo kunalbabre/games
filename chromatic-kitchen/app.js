@@ -39,6 +39,7 @@ let audioContext = null;
 let isMuted = false;
 let hintLevel = 0;
 let sparkleTimeout = null;
+let bubbleLoopTimeout = null;
 
 function averageColors(colors) {
   if (colors.length === 0) return [200, 205, 220];
@@ -204,6 +205,7 @@ function renderMixture() {
   const glow = document.getElementById("cauldronGlow");
   const rgbs = currentMix.map(c => c.rgb);
   surface.style.background = mixtureGradient(rgbs);
+  surface.classList.toggle("is-active", currentMix.length > 0);
   
   if (currentMix.length > 0) {
     const avg = averageColors(rgbs);
@@ -212,6 +214,8 @@ function renderMixture() {
   } else {
     glow.style.opacity = "0";
   }
+
+  syncBubbleLoop();
 }
 
 function addDrop(color) {
@@ -337,6 +341,72 @@ function playTone(freq, type, duration, volume) {
   osc.stop(audioContext.currentTime + duration);
 }
 
+function playBubbleBlip() {
+  if (isMuted || currentMix.length === 0) return;
+
+  ensureAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  const filter = audioContext.createBiquadFilter();
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(170 + Math.random() * 70, now);
+  oscillator.frequency.exponentialRampToValueAtTime(95 + Math.random() * 30, now + 0.18);
+
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(720, now);
+  filter.Q.value = 0.7;
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.026, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+  oscillator.connect(filter);
+  filter.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start(now);
+  oscillator.stop(now + 0.24);
+
+  if (Math.random() > 0.5) {
+    setTimeout(() => {
+      if (!isMuted && currentMix.length > 0) {
+        playTone(220 + Math.random() * 40, "sine", 0.08, 0.028);
+      }
+    }, 90);
+  }
+}
+
+function stopBubbleLoop() {
+  if (bubbleLoopTimeout) {
+    clearTimeout(bubbleLoopTimeout);
+    bubbleLoopTimeout = null;
+  }
+}
+
+function syncBubbleLoop() {
+  stopBubbleLoop();
+
+  if (isMuted || currentMix.length === 0) {
+    return;
+  }
+
+  const scheduleNext = () => {
+    if (isMuted || currentMix.length === 0) {
+      bubbleLoopTimeout = null;
+      return;
+    }
+
+    playBubbleBlip();
+    bubbleLoopTimeout = setTimeout(scheduleNext, 700 + Math.random() * 900);
+  };
+
+  bubbleLoopTimeout = setTimeout(scheduleNext, 220);
+}
+
 function playSound(action, pitchScale = 1) {
   switch(action) {
     case 'drop':
@@ -406,6 +476,7 @@ function toggleSound() {
   const btn = document.getElementById("soundToggleButton");
   btn.textContent = isMuted ? "Sound Off" : "Sound On";
   btn.classList.toggle("is-muted", isMuted);
+  syncBubbleLoop();
 }
 
 function getRecipeHint() {
