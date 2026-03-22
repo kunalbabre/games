@@ -419,12 +419,15 @@ function playSound(action, pitchScale = 1) {
       playTone(100, 'sawtooth', 0.3, 0.1);
       break;
     case 'success':
-      playTone(392, 'triangle', 0.14, 0.18);
-      setTimeout(() => playTone(523.25, 'triangle', 0.16, 0.2), 90);
-      setTimeout(() => playTone(659.25, 'triangle', 0.18, 0.22), 180);
-      setTimeout(() => playTone(783.99, 'triangle', 0.22, 0.2), 280);
-      setTimeout(() => playTone(1046.5, 'sine', 0.5, 0.12), 360);
-      setTimeout(() => playTone(1318.5, 'sine', 0.45, 0.08), 390);
+      playTone(392, 'triangle', 0.16, 0.18);
+      setTimeout(() => playTone(523.25, 'triangle', 0.18, 0.2), 90);
+      setTimeout(() => playTone(659.25, 'triangle', 0.22, 0.22), 180);
+      setTimeout(() => playTone(783.99, 'triangle', 0.26, 0.22), 290);
+      setTimeout(() => playTone(1046.5, 'sine', 0.54, 0.13), 380);
+      setTimeout(() => playTone(1318.5, 'sine', 0.5, 0.1), 450);
+      setTimeout(() => playTone(1567.98, 'triangle', 0.26, 0.12), 620);
+      setTimeout(() => playTone(1318.5, 'sine', 0.44, 0.09), 760);
+      setTimeout(() => playTone(1760, 'sine', 0.62, 0.08), 860);
       break;
     case 'error':
       playTone(120, 'square', 0.4, 0.1);
@@ -449,15 +452,17 @@ function showSuccessBurst() {
 
   burst.innerHTML = "";
 
-  for (let index = 0; index < 18; index += 1) {
+  for (let index = 0; index < 36; index += 1) {
     const sparkle = document.createElement("span");
     sparkle.className = "sparkle";
-    sparkle.style.left = `${8 + Math.random() * 84}%`;
-    sparkle.style.top = `${12 + Math.random() * 66}%`;
-    sparkle.style.setProperty("--sparkle-delay", `${Math.random() * 160}ms`);
-    sparkle.style.setProperty("--sparkle-drift-x", `${-70 + Math.random() * 140}px`);
-    sparkle.style.setProperty("--sparkle-drift-y", `${-90 - Math.random() * 90}px`);
-    sparkle.style.setProperty("--sparkle-rotate", `${Math.random() * 220}deg`);
+    const secondWave = index >= 18;
+    sparkle.style.left = `${6 + Math.random() * 88}%`;
+    sparkle.style.top = `${10 + Math.random() * 72}%`;
+    sparkle.style.setProperty("--sparkle-delay", `${(secondWave ? 180 : 0) + Math.random() * 240}ms`);
+    sparkle.style.setProperty("--sparkle-drift-x", `${-110 + Math.random() * 220}px`);
+    sparkle.style.setProperty("--sparkle-drift-y", `${-130 - Math.random() * 120}px`);
+    sparkle.style.setProperty("--sparkle-rotate", `${Math.random() * 320}deg`);
+    sparkle.style.setProperty("--sparkle-size", `${12 + Math.random() * 18}px`);
     burst.appendChild(sparkle);
   }
 
@@ -468,7 +473,7 @@ function showSuccessBurst() {
   sparkleTimeout = setTimeout(() => {
     burst.classList.remove("is-active");
     burst.innerHTML = "";
-  }, 1200);
+  }, 1900);
 }
 
 function toggleSound() {

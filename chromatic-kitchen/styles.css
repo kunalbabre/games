@@ -108,10 +108,11 @@ a {
 
 .sparkle {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: var(--sparkle-size, 16px);
+  height: var(--sparkle-size, 16px);
   opacity: 0;
   transform: translate3d(0, 0, 0) scale(0.4) rotate(0deg);
+  filter: saturate(1.2);
 }
 
 .sparkle::before,
@@ -121,7 +122,7 @@ a {
   inset: 0;
   border-radius: 999px;
   background: linear-gradient(135deg, #ffffff 0%, #9ee7ff 38%, #ffe680 100%);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 26px rgba(255, 255, 255, 0.58);
 }
 
 .sparkle::before {
@@ -133,7 +134,7 @@ a {
 }
 
 .success-burst.is-active .sparkle {
-  animation: sparkle-burst 860ms cubic-bezier(0.19, 0.82, 0.28, 1) forwards;
+  animation: sparkle-burst 1480ms cubic-bezier(0.19, 0.82, 0.28, 1) forwards;
   animation-delay: var(--sparkle-delay, 0ms);
 }
 
@@ -876,17 +877,21 @@ a {
 @keyframes sparkle-burst {
   0% {
     opacity: 0;
-    transform: translate3d(0, 10px, 0) scale(0.2) rotate(0deg);
+    transform: translate3d(0, 14px, 0) scale(0.14) rotate(0deg);
   }
 
-  20% {
+  18% {
     opacity: 1;
-    transform: translate3d(0, -6px, 0) scale(1) rotate(18deg);
+    transform: translate3d(0, -10px, 0) scale(1.18) rotate(18deg);
+  }
+
+  55% {
+    opacity: 0.94;
   }
 
   100% {
     opacity: 0;
-    transform: translate3d(var(--sparkle-drift-x), var(--sparkle-drift-y), 0) scale(0.65) rotate(var(--sparkle-rotate));
+    transform: translate3d(var(--sparkle-drift-x), var(--sparkle-drift-y), 0) scale(0.72) rotate(var(--sparkle-rotate));
   }
 }
 
