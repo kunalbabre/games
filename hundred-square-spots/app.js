@@ -281,8 +281,12 @@ function initGrid() {
   for (let i = 1; i <= 100; i++) {
     const tile = document.createElement('div');
     tile.className = 'grid-tile';
-    tile.textContent = i;
     tile.dataset.num = i;
+
+    const label = document.createElement('span');
+    label.className = 'tile-number';
+    label.textContent = i;
+    tile.appendChild(label);
 
     tile.onmousedown = (e) => {
       e.preventDefault();

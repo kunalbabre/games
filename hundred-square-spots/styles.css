@@ -485,19 +485,24 @@ a {
 .grid-tile::before {
   content: "";
   position: absolute;
-  inset: 14%;
+  top: 50%;
+  left: 50%;
+  width: 68%;
+  aspect-ratio: 1;
   border-radius: 50%;
   background: var(--tile-color, transparent);
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
   opacity: 0;
-  transform: scale(0.82);
+  transform: translate(-50%, -50%) scale(0.82);
   transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
   z-index: 0;
 }
 
-.grid-tile > * {
+.tile-number {
   position: relative;
   z-index: 1;
+  color: inherit;
+  text-shadow: inherit;
 }
 
 .grid-tile:hover {
@@ -512,7 +517,7 @@ a {
 
 .grid-tile.pushed::before {
   opacity: 1;
-  transform: scale(1);
+  transform: translate(-50%, -50%) scale(1);
   box-shadow:
     0 10px 18px rgba(0, 0, 0, 0.18),
     0 0 22px color-mix(in srgb, var(--tile-color, transparent) 65%, transparent);
