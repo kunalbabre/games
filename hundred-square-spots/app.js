@@ -18,6 +18,7 @@ let selectedColor = paletteColors[0];
 let gridState = new Map(); // Num -> ColorValue
 let history = [];
 const STORAGE_KEY = 'hundred-square-spots:saved-boards';
+const MAX_HISTORY = 60;
 
 const grid = document.getElementById('hundredGrid');
 const palette = document.getElementById('palette');
@@ -29,6 +30,52 @@ const gridStatus = document.getElementById('gridStatus');
 const saveNameInput = document.getElementById('saveNameInput');
 const saveBoardBtn = document.getElementById('saveBoardBtn');
 const savedBoardsList = document.getElementById('savedBoardsList');
+const undoBtn = document.getElementById('undoBtn');
+
+function createHistoryEntry() {
+  return {
+    tiles: Array.from(gridState.entries()),
+    selectedColorId: selectedColor.id,
+    paletteColors: paletteColors.map(color => ({ ...color }))
+  };
+}
+
+function pushHistory() {
+  history.push(createHistoryEntry());
+  if (history.length > MAX_HISTORY) {
+    history.shift();
+  }
+  updateUndoButton();
+}
+
+function updateUndoButton() {
+  undoBtn.disabled = history.length === 0;
+}
+
+function restoreHistoryEntry(entry) {
+  paletteColors = (entry.paletteColors || COLORS).map(color => ({ ...color }));
+  gridState = new Map((entry.tiles || []).map(([num, color]) => [Number(num), color]));
+  selectedColor = paletteColors.find(color => color.id === entry.selectedColorId) || paletteColors[0];
+
+  renderPalette();
+  updateBrushLabel();
+  applyGridState();
+  updateStats();
+}
+
+function undoLastAction() {
+  const previousState = history.pop();
+
+  if (!previousState) {
+    gridStatus.textContent = 'Nothing to undo yet.';
+    updateUndoButton();
+    return;
+  }
+
+  restoreHistoryEntry(previousState);
+  gridStatus.textContent = 'Undid the last board change.';
+  updateUndoButton();
+}
 
 function getSavedBoards() {
   try {
@@ -88,6 +135,7 @@ function applyGridState() {
 }
 
 function loadBoardState(snapshot) {
+  pushHistory();
   ensurePaletteColors(snapshot.paletteColors || []);
   gridState = new Map((snapshot.tiles || []).map(([num, color]) => [Number(num), color]));
   selectedColor = paletteColors.find(color => color.id === snapshot.selectedColorId)
@@ -290,6 +338,7 @@ function initGrid() {
 
     tile.onmousedown = (e) => {
       e.preventDefault();
+      pushHistory();
       toggleTile(i);
       window.isDragging = true;
     };
@@ -317,6 +366,7 @@ function toggleTile(num, onlyAdd = false) {
 // Pattern Tool Actions
 document.querySelectorAll('[data-rule]').forEach(btn => {
   btn.onclick = () => {
+    pushHistory();
     const rule = btn.dataset.rule;
     const val = parseInt(btn.dataset.val);
     for (let i = 1; i <= 100; i++) {
@@ -338,6 +388,7 @@ document.querySelectorAll('[data-rule]').forEach(btn => {
 });
 
 document.getElementById('clearBtn').onclick = () => {
+  pushHistory();
   gridState.clear();
   applyGridState();
   gridStatus.textContent = 'Grid cleared. Pick or add a color to start again.';
@@ -346,6 +397,7 @@ document.getElementById('clearBtn').onclick = () => {
 
 addColorBtn.onclick = addCustomColor;
 saveBoardBtn.onclick = saveCurrentBoard;
+undoBtn.onclick = undoLastAction;
 
 saveNameInput.addEventListener('keydown', event => {
   if (event.key === 'Enter') {
@@ -361,3 +413,4 @@ updateBrushLabel();
 initGrid();
 updateStats();
 renderSavedBoards();
+updateUndoButton();
