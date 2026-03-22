@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hundred Square Spots</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="space-glow glow-one"></div>
+    <div class="space-glow glow-two"></div>
+
+    <main class="game-shell">
+      <header class="game-header">
+        <div class="header-left">
+          <p class="eyebrow">Number Patterns</p>
+          <h1>100 Square Spots</h1>
+        </div>
+        <div class="header-right">
+          <div class="control-pill">
+            <button id="undoBtn" class="icon-btn" title="Undo Last">Undo</button>
+            <button id="clearBtn" class="icon-btn" title="Clear Grid">Clear</button>
+          </div>
+          <a href="../index.html" class="primary-btn">Exit</a>
+        </div>
+      </header>
+
+      <section class="game-main">
+        <aside class="side-panel palette-panel">
+          <div class="panel-section">
+            <p class="panel-tag">Color Brush</p>
+            <div id="palette" class="color-palette"></div>
+          </div>
+          
+          <div class="panel-section fill-tools">
+            <p class="panel-tag">Pattern Tools</p>
+            <div class="tool-grid">
+              <button data-rule="even">Evens</button>
+              <button data-rule="odd">Odds</button>
+              <button data-rule="prime">Primes</button>
+              <button data-rule="square">Squares</button>
+              <button data-rule="fib">Fibonacci</button>
+              <button data-rule="multiple" data-val="5">Mult 5</button>
+              <button data-rule="multiple" data-val="10">Mult 10</button>
+            </div>
+          </div>
+
+          <div class="panel-section stats-section">
+            <p class="panel-tag">Live Metrics</p>
+            <div id="statsList" class="stats-list">
+              <p class="empty-stats">Select a color to see live rules.</p>
+            </div>
+          </div>
+        </aside>
+
+        <section class="grid-container">
+          <div id="hundredGrid" class="hundred-grid"></div>
+          <div class="grid-footer">
+            <p id="gridStatus">Click or drag across squares to paint them.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <template id="statItemTemplate">
+      <div class="stat-item">
+        <div class="stat-row">
+          <span class="stat-swatch"></span>
+          <strong class="stat-count">0 spots</strong>
+        </div>
+        <div class="stat-label">Rule: <span class="stat-rule">Unknown</span></div>
+        <div class="stat-meta">Mean: <span class="stat-mean">0</span> | Gap: <span class="stat-gap">0</span></div>
+      </div>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

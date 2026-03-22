@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit Arcade</title>
+    <meta
+      name="description"
+      content="Orbit Arcade is a static collection of playful learning games including Chromatic Kitchen and Hundred Square Spots."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="space-glow glow-one"></div>
+    <div class="space-glow glow-two"></div>
+    <div class="space-glow glow-three"></div>
+
+    <main class="home-shell">
+      <section class="home-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Orbit Arcade</p>
+          <h1>Let's Play!</h1>
+          <p class="hero-text">
+            Choose a mission and start your cosmic adventure.
+          </p>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric-card">
+            <span>Stars Won</span>
+            <strong id="totalStars">12</strong>
+          </div>
+          <div class="metric-card">
+            <span>Games</span>
+            <strong>2</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="game-grid">
+        <a class="game-card feature-card" href="./chromatic-kitchen/index.html">
+          <div class="card-topline">Color Lab</div>
+          <h2>Chromatic Kitchen</h2>
+          <p>
+            Mix futuristic paint drops and match the target glow.
+          </p>
+          <div class="card-footer">Launch Mission</div>
+        </a>
+
+        <a class="game-card feature-card alt-card" href="./hundred-square-spots/index.html">
+          <div class="card-topline">Number Patterns</div>
+          <h2>100 Square Spots</h2>
+          <p>
+            Paint the grid and hunt for number patterns.
+          </p>
+          <div class="card-footer">Open Board</div>
+        </a>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

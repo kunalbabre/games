@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chromatic Kitchen</title>
+    <meta
+      name="description"
+      content="A playful color mixing game where kids blend paint drops to match vibrant target shades."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="backdrop backdrop-left"></div>
+    <div class="backdrop backdrop-right"></div>
+    <main class="app-shell">
+      <div id="successBurst" class="success-burst" aria-hidden="true"></div>
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Static Web Game</p>
+          <h1>Chromatic Kitchen</h1>
+          <p class="hero-text">
+            Mix colorful paint drops in a candy-coated lab and match the shade on the order card.
+          </p>
+        </div>
+        <div class="hero-stats" aria-label="Game stats">
+          <div class="stat-pill">
+            <span class="stat-label">Score</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">Streak</span>
+            <strong id="streakValue">0</strong>
+          </div>
+          <button id="shuffleChallengeButton" class="secondary-button" type="button">
+            New Order
+          </button>
+          <button id="soundToggleButton" class="secondary-button sound-toggle" type="button">
+            Sound On
+          </button>
+          <a href="../index.html" class="secondary-button back-link">Exit</a>
+        </div>
+      </section>
+
+      <section class="game-grid">
+        <aside class="panel source-panel">
+          <div class="panel-heading">
+            <p class="panel-tag">Paint Pantry</p>
+            <h2>Pick Your Drops</h2>
+          </div>
+          <div id="paletteButtons" class="palette-grid" aria-label="Color palette"></div>
+          <div class="panel-footnote">
+            Four drops max. Try different recipes, then tap <span>Check Mix</span>.
+          </div>
+        </aside>
+
+        <section class="panel cauldron-panel">
+          <a href="../index.html" class="floating-back-link">Exit</a>
+          <div class="panel-heading">
+            <p class="panel-tag">Mixing Bowl</p>
+            <h2 id="challengeTitle">Loading challenge...</h2>
+          </div>
+
+          <div class="target-card">
+            <div>
+              <p class="target-label">Target Shade</p>
+              <strong id="targetName">Sunset Orange</strong>
+            </div>
+            <div id="targetSwatch" class="target-swatch" aria-hidden="true"></div>
+          </div>
+
+          <div class="cauldron-wrap">
+            <div class="cauldron-glow" id="cauldronGlow"></div>
+            <div class="cauldron">
+              <div class="cauldron-rim"></div>
+              <div id="mixtureSurface" class="mixture-surface">
+                <div class="bubble bubble-a"></div>
+                <div class="bubble bubble-b"></div>
+                <div class="bubble bubble-c"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tray-block">
+            <div class="tray-heading">
+              <p class="target-label">Current Recipe</p>
+              <span id="dropCounter">0 / 4 drops</span>
+            </div>
+            <div id="mixSlots" class="mix-slots" aria-live="polite"></div>
+          </div>
+
+          <div class="utility-row">
+            <button id="hintButton" class="secondary-button" type="button">Hint</button>
+            <button id="nextButton" class="secondary-button" type="button">Next</button>
+          </div>
+
+          <div class="action-row">
+            <button id="undoButton" class="ghost-button" type="button">Undo</button>
+            <button id="resetButton" class="ghost-button" type="button">Reset</button>
+            <button id="checkButton" class="primary-button" type="button">Check Mix</button>
+          </div>
+
+          <p id="statusMessage" class="status-message" aria-live="polite">
+            Add a few colors to start mixing.
+          </p>
+        </section>
+
+        <aside class="panel recipe-panel">
+          <div class="panel-heading">
+            <p class="panel-tag">Recipe Book</p>
+            <h2>Unlocked Cards</h2>
+          </div>
+          <div id="recipeBook" class="recipe-book"></div>
+        </aside>
+      </section>
+    </main>
+
+    <template id="paletteButtonTemplate">
+      <button class="palette-button" type="button">
+        <span class="palette-topline"></span>
+        <span class="palette-bottomline"></span>
+      </button>
+    </template>
+
+    <template id="mixSlotTemplate">
+      <div class="mix-slot">
+        <span class="mix-slot-swatch"></span>
+        <span class="mix-slot-name"></span>
+      </div>
+    </template>
+
+    <template id="recipeCardTemplate">
+      <article class="recipe-card">
+        <div class="recipe-card-top">
+          <div class="recipe-swatch"></div>
+          <div>
+            <p class="recipe-card-tag">Unlocked</p>
+            <h3 class="recipe-card-title"></h3>
+          </div>
+        </div>
+        <p class="recipe-card-formula"></p>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
