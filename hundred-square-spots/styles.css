@@ -278,14 +278,14 @@ a {
 
 .color-palette {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .palette-swatch {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 2px solid transparent;
   background: var(--swatch-color);
   cursor: pointer;
@@ -300,10 +300,10 @@ a {
 }
 
 .palette-tools {
-  margin-top: 12px;
+  margin-top: 10px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -312,9 +312,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 50px;
-  padding: 10px 12px;
-  border-radius: 18px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(170, 198, 255, 0.16);
   color: var(--ink-900);
@@ -326,11 +326,11 @@ a {
 }
 
 .color-input-wrap input {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: transparent;
   cursor: pointer;
 }
@@ -341,18 +341,18 @@ a {
 
 .color-input-wrap input::-webkit-color-swatch {
   border: 2px solid rgba(255, 255, 255, 0.22);
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .palette-add-btn {
-  min-height: 50px;
-  padding: 0 16px;
+  min-height: 44px;
+  padding: 0 14px;
 }
 
 .brush-label {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--ink-600);
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   line-height: 1.3;
 }
 
