@@ -1,9 +1,9 @@
 :root {
   --bg: #060b18;
   --panel: rgba(15, 22, 46, 0.72);
-  --panel-border: rgba(130, 160, 255, 0.18);
+  --panel-border: rgba(153, 183, 255, 0.3);
   --text: #f3f6ff;
-  --muted: #a6b4d6;
+  --muted: #cad5f2;
   --blue: #7390ff;
   --aqua: #58e3d5;
   --coral: #ff7f92;
@@ -82,7 +82,7 @@ body::before {
 .home-hero,
 .game-card {
   backdrop-filter: blur(24px);
-  background: linear-gradient(180deg, rgba(18, 25, 51, 0.84), rgba(10, 15, 31, 0.76));
+  background: linear-gradient(180deg, rgba(18, 25, 51, 0.92), rgba(10, 15, 31, 0.86));
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);
 }
@@ -122,7 +122,7 @@ body::before {
   gap: 8px;
   padding: 7px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -167,8 +167,8 @@ body::before {
 .metric-card {
   padding: 14px 16px;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(130, 160, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(153, 183, 255, 0.2);
 }
 
 .metric-card span {
