@@ -40,7 +40,12 @@
             <span>Streak</span>
             <strong id="streakValue">0</strong>
           </div>
-          <button id="soundButton" class="button button-secondary" type="button">Sound On</button>
+          <div class="score-card" aria-label="Build time">
+            <span>Time</span>
+            <strong id="timerValue">00:00</strong>
+          </div>
+          <button id="effectsButton" class="button button-secondary" type="button">Effects Off</button>
+          <button id="soundButton" class="button button-secondary" type="button">Sound Off</button>
           <a class="button button-primary" href="../index.html">Exit</a>
         </div>
       </header>
@@ -70,9 +75,18 @@
             >
               <span id="progressBar"></span>
             </div>
+            <div id="milestoneList" class="milestone-list" aria-label="Supply drop milestones">
+              <span data-milestone="25">25%</span>
+              <span data-milestone="50">50%</span>
+              <span data-milestone="75">75%</span>
+            </div>
           </div>
 
           <div class="control-grid">
+            <button id="mathModeButton" class="button button-secondary" type="button">Math Codes On</button>
+            <button id="symmetryButton" class="button button-secondary" type="button" disabled>
+              Symmetry Off
+            </button>
             <button id="hintButton" class="button button-secondary" type="button">Show Hint</button>
             <button id="resetButton" class="button button-secondary" type="button">Reset House</button>
           </div>
@@ -90,12 +104,18 @@
               <p class="panel-label">Build Zone</p>
               <p id="selectedLabel" class="selected-label">Selected: Block 1</p>
             </div>
-            <p class="keyboard-tip">Tip: press keys 1-6 to choose a block.</p>
+            <div class="combo-display">
+              <span id="comboLabel">Combo x0</span>
+              <div class="combo-track" aria-hidden="true">
+                <span id="comboBar"></span>
+              </div>
+            </div>
           </div>
 
           <div class="world-frame">
             <div class="cloud cloud-one" aria-hidden="true"></div>
             <div class="cloud cloud-two" aria-hidden="true"></div>
+            <div id="particleLayer" class="particle-layer" aria-hidden="true"></div>
             <div id="buildGrid" class="build-grid" role="grid" aria-label="House blueprint"></div>
             <div class="ground" aria-hidden="true"></div>
           </div>
@@ -113,13 +133,32 @@
           </div>
 
           <div id="blockPalette" class="block-palette" aria-label="Numbered blocks"></div>
+          <button id="eraseButton" class="button button-secondary erase-button" type="button" disabled>
+            Eraser (Design Lab)
+          </button>
+
+          <div class="power-card">
+            <div class="power-copy">
+              <div>
+                <p class="panel-label">Combo Power</p>
+                <strong id="powerLabel">0 / 6 charged</strong>
+              </div>
+              <span id="powerBadge">Locked</span>
+            </div>
+            <div class="power-track" aria-hidden="true">
+              <span id="powerBar"></span>
+            </div>
+            <button id="powerButton" class="button power-button" type="button" disabled>
+              Power Build
+            </button>
+          </div>
 
           <div class="how-to-card">
-            <h3>How to build</h3>
+            <h3>Builder Quest</h3>
             <ol>
-              <li>Pick a colored number block.</li>
-              <li>Find the same number on the blueprint.</li>
-              <li>Place every block to complete the house.</li>
+              <li>Solve each math code to find its block number.</li>
+              <li>Build accurate patterns to charge Power Build.</li>
+              <li>Use Design Lab and symmetry for original creations.</li>
             </ol>
           </div>
 
@@ -136,6 +175,10 @@
         <h2 id="completionTitle">Great building!</h2>
         <div id="earnedStars" class="earned-stars" aria-label="Stars earned"></div>
         <p id="completionMessage"></p>
+        <div class="completion-stats">
+          <span>Time <strong id="finalTime">00:00</strong></span>
+          <span>Score <strong id="finalScore">0</strong></span>
+        </div>
         <button id="continueButton" class="button button-primary" type="button">Keep Building</button>
       </div>
     </div>

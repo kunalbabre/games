@@ -103,7 +103,7 @@ a:focus-visible {
 .game-shell {
   position: relative;
   z-index: 1;
-  width: min(1440px, 100%);
+  width: min(1600px, 100%);
   min-height: 100vh;
   margin: 0 auto;
   padding: 14px 16px;
@@ -230,7 +230,7 @@ a:focus-visible {
 
 .game-layout {
   display: grid;
-  grid-template-columns: minmax(220px, 0.82fr) minmax(500px, 1.8fr) minmax(220px, 0.82fr);
+  grid-template-columns: minmax(220px, 0.62fr) minmax(680px, 2fr) minmax(230px, 0.72fr);
   gap: 12px;
   margin-top: 12px;
 }
@@ -351,9 +351,36 @@ a:focus-visible {
   transition: width 180ms ease;
 }
 
+.milestone-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.milestone-list span {
+  padding: 4px;
+  text-align: center;
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface);
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition: transform 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.milestone-list span.is-earned {
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-warning);
+  background: var(--cp-warning);
+  transform: translateY(-2px);
+}
+
 .control-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -400,7 +427,7 @@ a:focus-visible {
 
 .build-toolbar {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
@@ -414,10 +441,42 @@ a:focus-visible {
   font-size: 0.8rem;
 }
 
+.combo-display {
+  min-width: 142px;
+  text-align: right;
+}
+
+.combo-display > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--cp-warning);
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.combo-track,
+.power-track {
+  height: 9px;
+  overflow: hidden;
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+}
+
+.combo-track span,
+.power-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--cp-warning);
+  transition: width 180ms ease;
+}
+
 .world-frame {
   position: relative;
   display: grid;
-  min-height: 420px;
+  min-height: 560px;
   place-items: center;
   overflow: hidden;
   border: 1px solid var(--cp-border);
@@ -459,16 +518,38 @@ a:focus-visible {
   top: 22%;
   right: 7%;
   transform: scale(0.78);
+  animation-delay: -5s;
+}
+
+.effects-on .cloud {
+  animation: cloud-drift 8s ease-in-out infinite alternate;
+}
+
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.block-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--cp-surface);
+  background: var(--block-color);
+  animation: block-burst 620ms ease-out forwards;
 }
 
 .build-grid {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(12, minmax(24px, 46px));
-  grid-template-rows: repeat(9, minmax(24px, 46px));
+  grid-template-columns: repeat(12, minmax(28px, 58px));
+  grid-template-rows: repeat(9, minmax(28px, 58px));
   gap: 2px;
-  width: min(100%, 574px);
+  width: min(96%, 738px);
   aspect-ratio: 12 / 9;
   padding: 8px;
 }
@@ -505,18 +586,39 @@ a:focus-visible {
   border-style: solid;
   border-color: var(--cp-border-strong);
   background: var(--block-color);
-  animation: place-block 180ms ease-out;
 }
 
 .build-cell.is-hinted {
   outline: 4px solid var(--cp-warning);
   outline-offset: 1px;
-  animation: hint-pulse 750ms ease-in-out infinite alternate;
 }
 
 .build-cell.is-wrong {
   background: var(--cp-danger);
+}
+
+.effects-on .build-cell.is-filled {
+  animation: place-block 180ms ease-out;
+}
+
+.effects-on .build-cell.is-hinted {
+  animation: hint-pulse 750ms ease-in-out infinite alternate;
+}
+
+.effects-on .build-cell.is-wrong {
   animation: wrong-block 240ms ease;
+}
+
+.build-cell.is-free {
+  visibility: visible;
+  color: var(--cp-text-muted);
+  border-style: solid;
+  background: var(--cp-surface-soft);
+  opacity: 0.7;
+}
+
+.build-cell.is-free.is-filled {
+  opacity: 1;
 }
 
 .cell-number,
@@ -532,10 +634,11 @@ a:focus-visible {
 }
 
 .cell-number {
-  width: 70%;
-  height: 70%;
-  max-width: 28px;
-  max-height: 28px;
+  width: 90%;
+  min-height: 70%;
+  padding: 2px;
+  font-size: clamp(0.5rem, 0.75vw, 0.68rem);
+  line-height: 1;
 }
 
 .status-message {
@@ -586,6 +689,10 @@ a:focus-visible {
   transform: translateY(-2px);
 }
 
+.effects-on .palette-block.is-selected {
+  animation: selected-block 680ms ease-in-out infinite alternate;
+}
+
 .palette-number {
   width: 32px;
   height: 32px;
@@ -634,6 +741,68 @@ a:focus-visible {
   padding-left: 20px;
 }
 
+.power-card {
+  padding: 13px;
+  border: 1px solid var(--cp-border);
+  border-radius: 18px;
+  background: var(--cp-sheen);
+}
+
+.power-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.power-copy strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.88rem;
+}
+
+#powerBadge {
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface-soft);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.power-card.is-ready {
+  border-color: var(--cp-warning);
+  box-shadow: inset 0 0 0 2px var(--cp-highlight);
+}
+
+.power-card.is-ready #powerBadge {
+  color: var(--cp-accent-fg);
+  background: var(--cp-warning);
+}
+
+.power-button {
+  width: 100%;
+  margin-top: 10px;
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-warning);
+  background: var(--cp-warning);
+}
+
+.power-card.is-ready .power-button {
+  box-shadow: 0 0 0 3px var(--cp-highlight);
+}
+
+.effects-on .power-card.is-ready .power-button {
+  animation: power-ready 560ms ease-in-out infinite alternate;
+}
+
+.erase-button.is-selected {
+  border-color: var(--cp-danger);
+  color: var(--cp-danger);
+  background: var(--cp-surface);
+}
+
 .next-button {
   width: 100%;
   margin-top: auto;
@@ -670,6 +839,28 @@ a:focus-visible {
 
 .completion-card p {
   color: var(--cp-text-muted);
+}
+
+.completion-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.completion-stats span {
+  padding: 10px;
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface-soft);
+}
+
+.completion-stats strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--cp-text);
+  font-size: 1.15rem;
 }
 
 .earned-stars {
@@ -718,14 +909,52 @@ a:focus-visible {
   from {
     transform: scale(1);
   }
+
+  @keyframes cloud-drift {
+    from {
+      transform: translateX(-10px);
+    }
+    to {
+      transform: translateX(14px);
+    }
+  }
+
+  @keyframes selected-block {
+    from {
+      box-shadow: inset 0 0 0 3px var(--cp-sheen);
+    }
+    to {
+      box-shadow: inset 0 0 0 3px var(--cp-sheen), 0 0 0 4px var(--cp-highlight);
+    }
+  }
+
+  @keyframes block-burst {
+    from {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0);
+    }
+    to {
+      opacity: 0;
+      transform: translate(var(--particle-x), var(--particle-y)) rotate(var(--particle-spin));
+    }
+  }
+
+  @keyframes power-ready {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.025);
+    }
+  }
   to {
     transform: scale(1.08);
   }
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .game-layout {
-    grid-template-columns: 220px minmax(460px, 1fr);
+    grid-template-columns: 230px minmax(560px, 1fr);
   }
 
   .toolbox-panel {
@@ -740,7 +969,7 @@ a:focus-visible {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 840px) {
   .game-shell {
     padding: 8px;
   }
