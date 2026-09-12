@@ -460,6 +460,31 @@ body {
   gap: 6px;
 }
 
+.quick-cut-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quick-cut-row .cut-preset-btn {
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border-radius: 8px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+  border: 1px solid var(--cp-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-cut-row .cut-preset-btn:hover {
+  border-color: var(--cp-accent);
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+}
+
 /* Cutting Board Canvas Area */
 .cutting-board-wrapper {
   position: relative;
@@ -670,6 +695,10 @@ body {
   justify-content: center;
   z-index: 100;
   padding: 16px;
+}
+
+.serve-dialog[hidden] {
+  display: none !important;
 }
 
 .serve-card {

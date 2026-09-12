@@ -81,10 +81,10 @@ class FruitAudioEngine {
       const crunchOsc = this.ctx.createOscillator();
       const crunchGain = this.ctx.createGain();
       crunchOsc.type = "triangle";
-      crunchOsc.frequency.setValueAtTime(240, now);
+      crunchOsc.frequency.setValueAtTime(260, now);
       crunchOsc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
 
-      crunchGain.gain.setValueAtTime(0.25, now);
+      crunchGain.gain.setValueAtTime(0.3, now);
       crunchGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
       crunchOsc.connect(crunchGain);
@@ -110,7 +110,7 @@ class FruitAudioEngine {
       wetFilter.frequency.exponentialRampToValueAtTime(400, now + 0.12);
 
       const wetGain = this.ctx.createGain();
-      wetGain.gain.setValueAtTime(0.3, now);
+      wetGain.gain.setValueAtTime(0.35, now);
       wetGain.gain.exponentialRampToValueAtTime(0.005, now + 0.12);
 
       wetNoise.connect(wetFilter);
@@ -150,8 +150,8 @@ class FruitAudioEngine {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(540, now);
-      osc.frequency.exponentialRampToValueAtTime(180, now + 0.09);
+      osc.frequency.setValueAtTime(580, now);
+      osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
 
       gain.gain.setValueAtTime(0.28, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
@@ -165,7 +165,7 @@ class FruitAudioEngine {
     }
   }
 
-  // Mission success chime
+  // Mission celebration chime
   playChime() {
     if (!this.enabled) return;
     this.init();
@@ -196,20 +196,6 @@ class FruitAudioEngine {
 
 // --- Fruit Catalog & Configurations ---
 const FRUITS_CATALOG = {
-  grapes: {
-    id: "grapes",
-    name: "Purple Grapes",
-    emoji: "🍇",
-    color: "#6b21a8",
-    fleshColor: "#a855f7",
-    rindColor: "#3b0764",
-    juiceColor: "rgba(168, 85, 247, 0.45)",
-    tag: "Juicy Cluster",
-    factTitle: "Grapes (Vitis vinifera)",
-    fact: "Grapes grow in clusters of 15 to 300 berries. They can be cut into smaller mini-bunches or sliced in half for healthy salads!",
-    baseRadius: 110,
-    isGrapeCluster: true,
-  },
   watermelon: {
     id: "watermelon",
     name: "Watermelon",
@@ -222,8 +208,22 @@ const FRUITS_CATALOG = {
     tag: "Sweet & Giant",
     factTitle: "Watermelon (Citrullus lanatus)",
     fact: "Watermelon is 92% water! Slicing it in halves (1/2), quarters (1/4), and wedges (1/8) makes sharing super easy.",
-    baseRadius: 130,
+    baseRadius: 125,
     hasSeeds: true,
+  },
+  grapes: {
+    id: "grapes",
+    name: "Purple Grapes",
+    emoji: "🍇",
+    color: "#7e22ce",
+    fleshColor: "#c084fc",
+    rindColor: "#3b0764",
+    juiceColor: "rgba(168, 85, 247, 0.45)",
+    tag: "Juicy Cluster",
+    factTitle: "Grapes (Vitis vinifera)",
+    fact: "Grapes grow in clusters of 15 to 300 berries. Slicing grapes in halves or quarters is great for fruit salads and snacks!",
+    baseRadius: 105,
+    isGrapeCluster: true,
   },
   apple: {
     id: "apple",
@@ -251,7 +251,7 @@ const FRUITS_CATALOG = {
     tag: "Citrus Slices",
     factTitle: "Orange (Citrus sinensis)",
     fact: "Oranges naturally grow in 10 to 12 segment wedges inside their peel, packed with Vitamin C.",
-    baseRadius: 110,
+    baseRadius: 108,
     isCitrus: true,
   },
   strawberry: {
@@ -279,7 +279,7 @@ const FRUITS_CATALOG = {
     tag: "Vibrant Core",
     factTitle: "Kiwifruit (Actinidia deliciosa)",
     fact: "Kiwi cross-sections reveal a creamy white core surrounded by tiny black edible seeds radiating outward like rays.",
-    baseRadius: 95,
+    baseRadius: 98,
     isKiwi: true,
   },
   lemon: {
@@ -308,16 +308,16 @@ const FRUITS_CATALOG = {
     tag: "Tropical Rings",
     factTitle: "Pineapple (Ananas comosus)",
     fact: "A single pineapple is actually a collection of many individual berries fused together around a central fibrous core!",
-    baseRadius: 120,
+    baseRadius: 115,
     isPineapple: true,
   },
 };
 
 // Mission Targets for Fraction Quest
 const FRACTION_MISSIONS = [
-  { targetCount: 2, fractionName: "1/2 Halves", desc: "Cut the fruit across the center into 2 equal halves." },
-  { targetCount: 4, fractionName: "1/4 Quarters", desc: "Slice across both ways to create 4 equal quarters." },
-  { targetCount: 8, fractionName: "1/8 Wedges", desc: "Slice each quarter into 8 equal sharing wedges." },
+  { targetCount: 2, fractionName: "1/2 Halves", desc: "Slice the fruit across the center into 2 equal halves." },
+  { targetCount: 4, fractionName: "1/4 Quarters", desc: "Slice across both directions to create 4 equal quarters." },
+  { targetCount: 8, fractionName: "1/8 Wedges", desc: "Slice each quarter to make 8 equal sharing pieces." },
 ];
 
 // --- Main Game Class ---
@@ -336,8 +336,8 @@ class FruitSliceStudio {
     this.boardHeight = 600;
 
     // State
-    this.activeFruitId = "grapes";
-    this.activeFruit = FRUITS_CATALOG.grapes;
+    this.activeFruitId = "watermelon";
+    this.activeFruit = FRUITS_CATALOG.watermelon;
     this.gameMode = "free"; // 'free' | 'mission'
     this.missionIndex = 0;
     this.knifeStyle = "chef"; // 'chef' | 'cleaver' | 'laser'
@@ -346,7 +346,7 @@ class FruitSliceStudio {
     this.score = 0;
     this.streak = 0;
     this.totalSlices = 0;
-    this.stars = 1;
+    this.stars = 2;
 
     // Pieces on Board
     this.pieces = [];
@@ -359,6 +359,13 @@ class FruitSliceStudio {
     this.dragStart = null;
     this.dragCurrent = null;
     this.knifeTrail = [];
+
+    // Make sure modal starts closed
+    const serveModal = document.getElementById("serveDialog");
+    if (serveModal) {
+      serveModal.hidden = true;
+      serveModal.classList.remove("is-open");
+    }
 
     // Bindings
     this.initDOM();
@@ -451,16 +458,16 @@ class FruitSliceStudio {
   // Generate a realistic cluster of grapes
   initGrapeCluster(cx, cy) {
     const grapeOffsets = [
-      { x: 0, y: -40, r: 24, frac: 1 / 10 },
-      { x: -30, y: -20, r: 23, frac: 1 / 10 },
-      { x: 30, y: -20, r: 23, frac: 1 / 10 },
-      { x: -50, y: 10, r: 22, frac: 1 / 10 },
-      { x: 0, y: 5, r: 24, frac: 1 / 10 },
-      { x: 50, y: 10, r: 22, frac: 1 / 10 },
-      { x: -28, y: 40, r: 21, frac: 1 / 10 },
-      { x: 28, y: 40, r: 21, frac: 1 / 10 },
-      { x: 0, y: 65, r: 20, frac: 1 / 10 },
-      { x: 0, y: 90, r: 18, frac: 1 / 10 },
+      { x: 0, y: -45, r: 24, frac: 1 / 10 },
+      { x: -32, y: -22, r: 23, frac: 1 / 10 },
+      { x: 32, y: -22, r: 23, frac: 1 / 10 },
+      { x: -52, y: 10, r: 22, frac: 1 / 10 },
+      { x: 0, y: 5, r: 25, frac: 1 / 10 },
+      { x: 52, y: 10, r: 22, frac: 1 / 10 },
+      { x: -28, y: 42, r: 21, frac: 1 / 10 },
+      { x: 28, y: 42, r: 21, frac: 1 / 10 },
+      { x: 0, y: 68, r: 20, frac: 1 / 10 },
+      { x: 0, y: 95, r: 18, frac: 1 / 10 },
     ];
 
     grapeOffsets.forEach((pos, idx) => {
@@ -499,7 +506,7 @@ class FruitSliceStudio {
       modeFreeBtn.classList.add("is-active");
       modeMissionBtn.classList.remove("is-active");
       missionCard.hidden = true;
-      this.setStatus("Free Slice Mode: Cut anywhere and explore shapes & fractions!");
+      this.setStatus("Free Slice Mode: Cut any angle and size!");
     });
 
     modeMissionBtn.addEventListener("click", () => {
@@ -511,11 +518,24 @@ class FruitSliceStudio {
       this.setStatus("Fraction Quest: Follow the guides to cut the target fraction!");
     });
 
+    // Quick Cut Preset Buttons
+    document.getElementById("cutHalfBtn")?.addEventListener("click", () => {
+      this.quickCutHalves();
+    });
+
+    document.getElementById("cutQuartersBtn")?.addEventListener("click", () => {
+      this.quickCutQuarters();
+    });
+
+    document.getElementById("cutEighthsBtn")?.addEventListener("click", () => {
+      this.quickCutEighths();
+    });
+
     // Fresh Fruit Button
     document.getElementById("freshFruitBtn").addEventListener("click", () => {
       this.resetBoard();
       this.audio.playPop();
-      this.setStatus("Fresh fruit placed on the cutting board!");
+      this.setStatus("Fresh whole fruit placed on the cutting board!");
     });
 
     // Guide Toggle Button
@@ -539,11 +559,15 @@ class FruitSliceStudio {
 
     // Close Serve Modal Buttons
     document.getElementById("closeServeBtn").addEventListener("click", () => {
-      document.getElementById("serveDialog").hidden = true;
+      const dialog = document.getElementById("serveDialog");
+      dialog.hidden = true;
+      dialog.classList.remove("is-open");
     });
 
     document.getElementById("nextFruitServeBtn").addEventListener("click", () => {
-      document.getElementById("serveDialog").hidden = true;
+      const dialog = document.getElementById("serveDialog");
+      dialog.hidden = true;
+      dialog.classList.remove("is-open");
       const fruitKeys = Object.keys(FRUITS_CATALOG);
       const nextIdx = (fruitKeys.indexOf(this.activeFruitId) + 1) % fruitKeys.length;
       this.selectFruit(fruitKeys[nextIdx]);
@@ -593,7 +617,8 @@ class FruitSliceStudio {
       this.dragStart = pos;
       this.dragCurrent = pos;
       this.knifeTrail = [{ x: pos.x, y: pos.y, time: Date.now() }];
-      document.getElementById("slicePrompt").style.display = "none";
+      const promptEl = document.getElementById("slicePrompt");
+      if (promptEl) promptEl.style.display = "none";
     };
 
     const handlePointerMove = (e) => {
@@ -602,12 +627,10 @@ class FruitSliceStudio {
       this.dragCurrent = pos;
       this.knifeTrail.push({ x: pos.x, y: pos.y, time: Date.now() });
 
-      // Keep recent trail
       if (this.knifeTrail.length > 12) {
         this.knifeTrail.shift();
       }
 
-      // Check distance for whoosh sound
       if (this.knifeTrail.length > 3) {
         const p1 = this.knifeTrail[0];
         const p2 = this.knifeTrail[this.knifeTrail.length - 1];
@@ -644,6 +667,48 @@ class FruitSliceStudio {
     window.addEventListener("touchend", handlePointerUp);
   }
 
+  // --- Quick Cut Presets ---
+  quickCutHalves() {
+    this.resetBoard();
+    const cx = this.boardWidth / 2;
+    const cy = this.boardHeight / 2;
+    this.performSlice({
+      p1: { x: cx, y: cy - 200 },
+      p2: { x: cx, y: cy + 200 },
+    });
+    this.setStatus("Sliced into 2 equal halves (1/2 + 1/2)!");
+  }
+
+  quickCutQuarters() {
+    this.quickCutHalves();
+    const cx = this.boardWidth / 2;
+    const cy = this.boardHeight / 2;
+    setTimeout(() => {
+      this.performSlice({
+        p1: { x: cx - 200, y: cy },
+        p2: { x: cx + 200, y: cy },
+      });
+      this.setStatus("Sliced into 4 equal quarters (1/4 each)!");
+    }, 150);
+  }
+
+  quickCutEighths() {
+    this.quickCutQuarters();
+    const cx = this.boardWidth / 2;
+    const cy = this.boardHeight / 2;
+    setTimeout(() => {
+      this.performSlice({
+        p1: { x: cx - 180, y: cy - 180 },
+        p2: { x: cx + 180, y: cy + 180 },
+      });
+      this.performSlice({
+        p1: { x: cx - 180, y: cy + 180 },
+        p2: { x: cx + 180, y: cy - 180 },
+      });
+      this.setStatus("Sliced into 8 sharing wedges (1/8 each)!");
+    }, 320);
+  }
+
   // --- Slicing Engine ---
   performSlice(line) {
     const p1 = line.p1;
@@ -669,7 +734,7 @@ class FruitSliceStudio {
         this.totalSlices++;
 
         // Calculate push force
-        const impulse = 8.5;
+        const impulse = 10;
         const push1X = nx * impulse;
         const push1Y = ny * impulse;
         const push2X = -nx * impulse;
@@ -685,11 +750,11 @@ class FruitSliceStudio {
           fruit: piece.fruit,
           x: piece.x + push1X,
           y: piece.y + push1Y,
-          vx: push1X * 0.6,
-          vy: push1Y * 0.6,
+          vx: push1X * 0.7,
+          vy: push1Y * 0.7,
           rotation: piece.rotation,
-          vRot: (Math.random() - 0.5) * 0.1,
-          radius: piece.radius * 0.95,
+          vRot: (Math.random() - 0.5) * 0.08,
+          radius: piece.radius * 0.96,
           fraction: halfFrac,
           startAngle: piece.startAngle,
           endAngle: piece.startAngle + halfAngleSpan,
@@ -703,11 +768,11 @@ class FruitSliceStudio {
           fruit: piece.fruit,
           x: piece.x + push2X,
           y: piece.y + push2Y,
-          vx: push2X * 0.6,
-          vy: push2Y * 0.6,
+          vx: push2X * 0.7,
+          vy: push2Y * 0.7,
           rotation: piece.rotation,
-          vRot: (Math.random() - 0.5) * 0.1,
-          radius: piece.radius * 0.95,
+          vRot: (Math.random() - 0.5) * 0.08,
+          radius: piece.radius * 0.96,
           fraction: halfFrac,
           startAngle: piece.startAngle + halfAngleSpan,
           endAngle: piece.endAngle,
@@ -780,8 +845,7 @@ class FruitSliceStudio {
     const count = 10 + Math.floor(Math.random() * 8);
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 2 + Math.random() * 8;
-      const splashDist = 15 + Math.random() * 45;
+      const splashDist = 15 + Math.random() * 50;
       const sx = x + Math.cos(angle) * splashDist + nx * (Math.random() * 20 - 10);
       const sy = y + Math.sin(angle) * splashDist + ny * (Math.random() * 20 - 10);
       const r = 2 + Math.random() * 6;
@@ -791,11 +855,9 @@ class FruitSliceStudio {
         y: sy,
         radius: r,
         color: fruit.juiceColor,
-        alpha: 0.6 + Math.random() * 0.3,
       });
     }
 
-    // Paint onto persistent splatter canvas
     this.renderSplatters();
   }
 
@@ -821,16 +883,18 @@ class FruitSliceStudio {
 
     document.getElementById("targetFractionTitle").textContent = `Cut into ${mission.fractionName}`;
     document.getElementById("targetFractionDesc").textContent = mission.desc;
-    document.getElementById("targetPiecesCount").textContent = `Pieces: ${this.pieces.length} / ${mission.targetCount}`;
+    const pieceCount = this.activeFruit.isGrapeCluster ? Math.floor(this.totalSlices) : this.pieces.length;
+    document.getElementById("targetPiecesCount").textContent = `Pieces: ${pieceCount} / ${mission.targetCount}`;
   }
 
   checkMissionProgress() {
     const mission = FRACTION_MISSIONS[this.missionIndex];
     if (!mission) return;
 
-    document.getElementById("targetPiecesCount").textContent = `Pieces: ${this.pieces.length} / ${mission.targetCount}`;
+    const count = this.pieces.length;
+    document.getElementById("targetPiecesCount").textContent = `Pieces: ${count} / ${mission.targetCount}`;
 
-    if (this.pieces.length >= mission.targetCount) {
+    if (!this.activeFruit.isGrapeCluster && count >= mission.targetCount) {
       this.audio.playChime();
       this.score += 200;
       this.streak += 2;
@@ -838,11 +902,8 @@ class FruitSliceStudio {
       this.updateScoreUI();
       this.setStatus(`🌟 Great job! Sliced into ${mission.fractionName}!`);
 
-      setTimeout(() => {
-        this.openServeModal();
-        this.missionIndex = (this.missionIndex + 1) % FRACTION_MISSIONS.length;
-        this.updateMissionCard();
-      }, 600);
+      this.missionIndex = (this.missionIndex + 1) % FRACTION_MISSIONS.length;
+      this.updateMissionCard();
     }
   }
 
@@ -868,7 +929,7 @@ class FruitSliceStudio {
     const list = document.getElementById("piecesList");
     list.innerHTML = "";
 
-    this.pieces.forEach((p, idx) => {
+    this.pieces.slice(0, 10).forEach((p, idx) => {
       const fracStr = this.fractionToText(p.fraction);
       const row = document.createElement("div");
       row.className = "piece-row";
@@ -880,11 +941,11 @@ class FruitSliceStudio {
     });
 
     // Equation
-    const fracTerms = this.pieces.map((p) => this.fractionToText(p.fraction));
-    if (fracTerms.length <= 6) {
+    const fracTerms = this.pieces.slice(0, 6).map((p) => this.fractionToText(p.fraction));
+    if (fracTerms.length <= 6 && this.pieces.length <= 6) {
       document.getElementById("fractionEquation").textContent = `${fracTerms.join(" + ")} = 1 Whole`;
     } else {
-      document.getElementById("fractionEquation").textContent = `${fracTerms.length} × 1/${fracTerms.length} = 1 Whole`;
+      document.getElementById("fractionEquation").textContent = `${this.pieces.length} × 1/${this.pieces.length} = 1 Whole`;
     }
   }
 
@@ -947,7 +1008,7 @@ class FruitSliceStudio {
     // Inner circle ring
     ctx.beginPath();
     ctx.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
-    ctx.fillStyle = "var(--cp-surface)";
+    ctx.fillStyle = "#ffffff";
     ctx.fill();
   }
 
@@ -955,6 +1016,7 @@ class FruitSliceStudio {
   openServeModal() {
     const dialog = document.getElementById("serveDialog");
     dialog.hidden = false;
+    dialog.classList.add("is-open");
 
     const modalCanvas = document.getElementById("platterCanvas");
     const mCtx = modalCanvas.getContext("2d");
@@ -963,33 +1025,45 @@ class FruitSliceStudio {
 
     mCtx.clearRect(0, 0, mw, mh);
 
-    // Draw platter dish
+    // Porcelain Platter
+    mCtx.save();
+    mCtx.shadowColor = "rgba(0, 0, 0, 0.15)";
+    mCtx.shadowBlur = 12;
+    mCtx.shadowOffsetY = 4;
     mCtx.beginPath();
-    mCtx.ellipse(mw / 2, mh / 2, mw * 0.44, mh * 0.4, 0, 0, Math.PI * 2);
+    mCtx.ellipse(mw / 2, mh / 2, mw * 0.44, mh * 0.38, 0, 0, Math.PI * 2);
     mCtx.fillStyle = "#ffffff";
     mCtx.fill();
-    mCtx.lineWidth = 6;
-    mCtx.strokeStyle = "var(--cp-accent)";
+    mCtx.lineWidth = 4;
+    mCtx.strokeStyle = "#e2e8f0";
+    mCtx.stroke();
+    mCtx.restore();
+
+    // Decorative Platter Rim
+    mCtx.beginPath();
+    mCtx.ellipse(mw / 2, mh / 2, mw * 0.38, mh * 0.32, 0, 0, Math.PI * 2);
+    mCtx.strokeStyle = "rgba(177, 31, 75, 0.2)";
+    mCtx.lineWidth = 2;
     mCtx.stroke();
 
-    // Draw pieces arranged on plate
+    // Draw fruit pieces on plate
     this.pieces.forEach((piece, idx) => {
-      const angle = (idx / this.pieces.length) * Math.PI * 2;
-      const dist = 40;
+      const angle = (idx / Math.max(1, this.pieces.length)) * Math.PI * 2;
+      const dist = Math.min(70, 20 + this.pieces.length * 4);
       const px = mw / 2 + Math.cos(angle) * dist;
-      const py = mh / 2 + Math.sin(angle) * dist * 0.75;
+      const py = mh / 2 + Math.sin(angle) * dist * 0.7;
 
       this.renderFruitPiece(mCtx, {
         ...piece,
         x: px,
         y: py,
-        radius: piece.radius * 0.45,
+        radius: Math.min(38, piece.radius * 0.5),
       });
     });
 
     document.getElementById("serveAccuracy").textContent = `${95 + Math.floor(Math.random() * 5)}%`;
     document.getElementById("serveFractions").textContent = `${this.pieces.length} Pieces`;
-    document.getElementById("serveBonus").textContent = `+${this.pieces.length * 30} pts`;
+    document.getElementById("serveBonus").textContent = `+${this.pieces.length * 25} pts`;
   }
 
   // --- Main Animation & Render Loop ---
@@ -1058,24 +1132,27 @@ class FruitSliceStudio {
 
   renderCuttingBoardTexture() {
     const ctx = this.ctx;
-    // Wood background
-    ctx.fillStyle = "#d2a679";
+    // Wood background gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, this.boardHeight);
+    grad.addColorStop(0, "#e4bd8f");
+    grad.addColorStop(1, "#c59863");
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, this.boardWidth, this.boardHeight);
 
     // Wood Grain lines
-    ctx.strokeStyle = "rgba(139, 90, 43, 0.12)";
+    ctx.strokeStyle = "rgba(107, 68, 35, 0.12)";
     ctx.lineWidth = 3;
-    for (let y = 30; y < this.boardHeight; y += 40) {
+    for (let y = 35; y < this.boardHeight; y += 45) {
       ctx.beginPath();
       ctx.moveTo(0, y);
-      ctx.bezierCurveTo(300, y + 10, 600, y - 10, this.boardWidth, y + 5);
+      ctx.bezierCurveTo(300, y + 15, 600, y - 15, this.boardWidth, y + 8);
       ctx.stroke();
     }
 
-    // Inner board border groove
-    ctx.strokeStyle = "#8b5a2b";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(16, 16, this.boardWidth - 32, this.boardHeight - 32);
+    // Juice groove channel
+    ctx.strokeStyle = "rgba(92, 54, 23, 0.4)";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(18, 18, this.boardWidth - 36, this.boardHeight - 36);
   }
 
   renderCutGuides() {
@@ -1085,18 +1162,18 @@ class FruitSliceStudio {
 
     ctx.save();
     ctx.setLineDash([8, 6]);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+    ctx.lineWidth = 2.5;
 
     // Center Cross guides
     ctx.beginPath();
-    ctx.moveTo(cx - 160, cy);
-    ctx.lineTo(cx + 160, cy);
+    ctx.moveTo(cx - 180, cy);
+    ctx.lineTo(cx + 180, cy);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(cx, cy - 160);
-    ctx.lineTo(cx, cy + 160);
+    ctx.moveTo(cx, cy - 180);
+    ctx.lineTo(cx, cy + 180);
     ctx.stroke();
 
     ctx.restore();
@@ -1109,26 +1186,28 @@ class FruitSliceStudio {
     ctx.translate(piece.x, piece.y);
     ctx.rotate(piece.rotation);
 
-    // Drop shadow
+    // Shadow
     ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.22)";
+    ctx.shadowBlur = 10;
     ctx.shadowOffsetY = 6;
 
+    const isWhole = piece.cutCount === 0 && Math.abs(piece.fraction - 1.0) < 0.01;
+
     if (fruit.isGrapeCluster || piece.isGrapeBerry) {
-      this.renderGrapePiece(ctx, piece);
+      this.renderGrapePiece(ctx, piece, isWhole);
     } else if (fruit.id === "watermelon") {
-      this.renderWatermelonPiece(ctx, piece);
+      this.renderWatermelonPiece(ctx, piece, isWhole);
     } else if (fruit.id === "apple") {
-      this.renderApplePiece(ctx, piece);
+      this.renderApplePiece(ctx, piece, isWhole);
     } else if (fruit.isCitrus) {
-      this.renderCitrusPiece(ctx, piece);
+      this.renderCitrusPiece(ctx, piece, isWhole);
     } else if (fruit.isBerry) {
-      this.renderStrawberryPiece(ctx, piece);
+      this.renderStrawberryPiece(ctx, piece, isWhole);
     } else if (fruit.isKiwi) {
-      this.renderKiwiPiece(ctx, piece);
+      this.renderKiwiPiece(ctx, piece, isWhole);
     } else if (fruit.isPineapple) {
-      this.renderPineapplePiece(ctx, piece);
+      this.renderPineapplePiece(ctx, piece, isWhole);
     }
 
     ctx.restore();
@@ -1136,12 +1215,40 @@ class FruitSliceStudio {
   }
 
   // 1. Watermelon Rendering
-  renderWatermelonPiece(ctx, piece) {
+  renderWatermelonPiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
-    const isWhole = Math.abs(eA - sA - Math.PI * 2) < 0.01;
 
+    if (isWhole) {
+      // Whole Green Striped Watermelon
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 10, 0, 0, r);
+      grad.addColorStop(0, "#4ade80");
+      grad.addColorStop(0.7, "#16a34a");
+      grad.addColorStop(1, "#14532d");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Dark Green Stripes
+      ctx.strokeStyle = "#052e16";
+      ctx.lineWidth = 12;
+      for (let i = -3; i <= 3; i++) {
+        ctx.beginPath();
+        ctx.bezierCurveTo(i * 24 - 10, -r, i * 28 + 10, 0, i * 24 - 10, r);
+        ctx.stroke();
+      }
+
+      // Glossy highlight
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.4, -r * 0.4, r * 0.3, r * 0.15, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+      ctx.fill();
+      return;
+    }
+
+    // Sliced Cross-section
     // Green Rind
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -1167,7 +1274,7 @@ class FruitSliceStudio {
     ctx.fill();
 
     // Black seeds
-    const seedCount = isWhole ? 14 : 4;
+    const seedCount = Math.max(2, Math.floor(8 * piece.fraction));
     ctx.fillStyle = "#1c1917";
     for (let i = 0; i < seedCount; i++) {
       const theta = sA + ((i + 0.5) / seedCount) * (eA - sA);
@@ -1181,12 +1288,31 @@ class FruitSliceStudio {
   }
 
   // 2. Grape Rendering
-  renderGrapePiece(ctx, piece) {
+  renderGrapePiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
-    // Purple Skin
+    if (isWhole || piece.cutCount === 0) {
+      // Whole Glossy Grape Berry
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 2, 0, 0, r);
+      grad.addColorStop(0, "#c084fc");
+      grad.addColorStop(0.6, "#7e22ce");
+      grad.addColorStop(1, "#3b0764");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Highlight sheen
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.35, -r * 0.35, r * 0.3, r * 0.15, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.fill();
+      return;
+    }
+
+    // Cut Grape Half
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
@@ -1194,7 +1320,7 @@ class FruitSliceStudio {
     ctx.fillStyle = piece.fruit.color;
     ctx.fill();
 
-    // Translucent Juicy Flesh
+    // Translucent Juicy Interior
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r * 0.85, sA, eA);
@@ -1202,20 +1328,47 @@ class FruitSliceStudio {
     ctx.fillStyle = piece.fruit.fleshColor;
     ctx.fill();
 
-    // Highlight sheen
+    // Seed center
     ctx.beginPath();
-    ctx.arc(-r * 0.3, -r * 0.3, r * 0.3, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.arc(0, 0, r * 0.2, 0, Math.PI * 2);
+    ctx.fillStyle = "#4c1d95";
     ctx.fill();
   }
 
   // 3. Apple Rendering
-  renderApplePiece(ctx, piece) {
+  renderApplePiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
-    // Red Skin
+    if (isWhole) {
+      // Whole Red Apple
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 10, 0, 0, r);
+      grad.addColorStop(0, "#f87171");
+      grad.addColorStop(0.7, "#dc2626");
+      grad.addColorStop(1, "#7f1d1d");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Apple Stem & Leaf
+      ctx.fillStyle = "#78350f";
+      ctx.fillRect(-3, -r - 12, 6, 14);
+      ctx.beginPath();
+      ctx.ellipse(8, -r - 8, 10, 5, Math.PI / 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#16a34a";
+      ctx.fill();
+
+      // Highlight
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.4, -r * 0.4, r * 0.25, r * 0.12, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.fill();
+      return;
+    }
+
+    // Sliced Apple
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
@@ -1223,7 +1376,7 @@ class FruitSliceStudio {
     ctx.fillStyle = piece.fruit.rindColor;
     ctx.fill();
 
-    // Creamy Ivory Flesh
+    // Ivory Flesh
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r * 0.88, sA, eA);
@@ -1231,7 +1384,7 @@ class FruitSliceStudio {
     ctx.fillStyle = piece.fruit.fleshColor;
     ctx.fill();
 
-    // Central Core & Dark Seeds
+    // Core Star
     ctx.beginPath();
     ctx.ellipse(0, 0, r * 0.18, r * 0.28, 0, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(180, 83, 9, 0.25)";
@@ -1239,18 +1392,43 @@ class FruitSliceStudio {
 
     ctx.fillStyle = "#451a03";
     ctx.beginPath();
-    ctx.ellipse(-4, 0, 2.5, 4, -0.3, 0, Math.PI * 2);
-    ctx.ellipse(4, 0, 2.5, 4, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(-3, 0, 2, 3.5, -0.3, 0, Math.PI * 2);
+    ctx.ellipse(3, 0, 2, 3.5, 0.3, 0, Math.PI * 2);
     ctx.fill();
   }
 
   // 4. Citrus (Orange / Lemon) Rendering
-  renderCitrusPiece(ctx, piece) {
+  renderCitrusPiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
-    // Zesty Outer Rind
+    if (isWhole) {
+      // Whole Orange/Lemon sphere
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 10, 0, 0, r);
+      grad.addColorStop(0, piece.fruit.fleshColor);
+      grad.addColorStop(0.8, piece.fruit.color);
+      grad.addColorStop(1, piece.fruit.rindColor);
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stem button
+      ctx.beginPath();
+      ctx.arc(0, -r * 0.75, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#15803d";
+      ctx.fill();
+
+      // Highlight
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.4, -r * 0.4, r * 0.28, r * 0.15, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.fill();
+      return;
+    }
+
+    // Sliced Citrus
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
@@ -1270,7 +1448,7 @@ class FruitSliceStudio {
     const segCount = 8;
     for (let i = 0; i < segCount; i++) {
       const segStart = sA + (i / segCount) * (eA - sA);
-      const segEnd = sA + ((i + 0.9) / segCount) * (eA - sA);
+      const segEnd = sA + ((i + 0.88) / segCount) * (eA - sA);
 
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -1280,19 +1458,52 @@ class FruitSliceStudio {
       ctx.fill();
     }
 
-    // Center white core
+    // Center Core
     ctx.beginPath();
-    ctx.arc(0, 0, r * 0.1, 0, Math.PI * 2);
+    ctx.arc(0, 0, r * 0.12, 0, Math.PI * 2);
     ctx.fillStyle = piece.fruit.rindInnerColor;
     ctx.fill();
   }
 
   // 5. Strawberry Rendering
-  renderStrawberryPiece(ctx, piece) {
+  renderStrawberryPiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
+    if (isWhole) {
+      // Whole Conical Strawberry
+      const grad = ctx.createRadialGradient(-r * 0.2, -r * 0.2, 5, 0, 0, r);
+      grad.addColorStop(0, "#fb7185");
+      grad.addColorStop(0.7, "#e11d48");
+      grad.addColorStop(1, "#881337");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Leaf crown
+      ctx.fillStyle = "#15803d";
+      for (let i = 0; i < 5; i++) {
+        const ang = (i / 5) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(ang) * 16, -r * 0.6 + Math.sin(ang) * 8, 12, 6, ang, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Exterior yellow seeds
+      ctx.fillStyle = "#fef08a";
+      for (let i = 0; i < 14; i++) {
+        const ang = (i / 14) * Math.PI * 2;
+        const d = r * 0.55;
+        ctx.beginPath();
+        ctx.arc(Math.cos(ang) * d, Math.sin(ang) * d, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      return;
+    }
+
+    // Sliced Strawberry
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
@@ -1300,24 +1511,35 @@ class FruitSliceStudio {
     ctx.fillStyle = piece.fruit.color;
     ctx.fill();
 
-    // Tiny exterior seeds
-    ctx.fillStyle = "#fef08a";
-    for (let i = 0; i < 10; i++) {
-      const theta = sA + (i / 10) * (eA - sA);
-      const dist = r * 0.7;
-      ctx.beginPath();
-      ctx.arc(Math.cos(theta) * dist, Math.sin(theta) * dist, 1.8, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // Center lighter pulp
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r * 0.6, sA, eA);
+    ctx.closePath();
+    ctx.fillStyle = "#fda4af";
+    ctx.fill();
   }
 
   // 6. Kiwi Rendering
-  renderKiwiPiece(ctx, piece) {
+  renderKiwiPiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
-    // Fuzzy Brown Skin
+    if (isWhole) {
+      // Fuzzy Brown Kiwi
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 10, 0, 0, r);
+      grad.addColorStop(0, "#a16207");
+      grad.addColorStop(0.7, "#78350f");
+      grad.addColorStop(1, "#451a03");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      return;
+    }
+
+    // Sliced Kiwi Cross-section
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
@@ -1341,8 +1563,9 @@ class FruitSliceStudio {
 
     // Black seed ring
     ctx.fillStyle = "#171717";
-    for (let i = 0; i < 14; i++) {
-      const theta = sA + (i / 14) * (eA - sA);
+    const seedCount = Math.max(3, Math.floor(14 * piece.fraction));
+    for (let i = 0; i < seedCount; i++) {
+      const theta = sA + (i / seedCount) * (eA - sA);
       const dist = r * 0.44;
       ctx.beginPath();
       ctx.ellipse(Math.cos(theta) * dist, Math.sin(theta) * dist, 1.6, 2.8, theta, 0, Math.PI * 2);
@@ -1351,12 +1574,34 @@ class FruitSliceStudio {
   }
 
   // 7. Pineapple Rendering
-  renderPineapplePiece(ctx, piece) {
+  renderPineapplePiece(ctx, piece, isWhole) {
     const r = piece.radius;
     const sA = piece.startAngle;
     const eA = piece.endAngle;
 
-    // Textured Golden Skin
+    if (isWhole) {
+      // Golden Pineapple textured
+      const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 10, 0, 0, r);
+      grad.addColorStop(0, "#eab308");
+      grad.addColorStop(0.7, "#ca8a04");
+      grad.addColorStop(1, "#713f12");
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Crown Leaves
+      ctx.fillStyle = "#15803d";
+      for (let i = -2; i <= 2; i++) {
+        ctx.beginPath();
+        ctx.bezierCurveTo(i * 12, -r - 10, i * 16, -r - 30, i * 8, -r - 35);
+        ctx.lineWidth = 6;
+        ctx.stroke();
+      }
+      return;
+    }
+
+    // Sliced Pineapple
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, sA, eA);
