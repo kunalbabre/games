@@ -1,4 +1,12 @@
-// Orbit Arcade home page does not require JavaScript yet.
+const builderProgressKey = "number-block-house:progress";
+const totalStars = document.querySelector("#totalStars");
+
+try {
+  const builderProgress = JSON.parse(window.localStorage.getItem(builderProgressKey) || "{}");
+  totalStars.textContent = String(12 + (Number(builderProgress.totalStars) || 0));
+} catch {
+  totalStars.textContent = "12";
+}
 
 const challengeRecipes = [
   { name: "Sunset Orange", drops: ["ruby", "sun"] },
