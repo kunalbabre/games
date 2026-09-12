@@ -188,7 +188,7 @@ body::before {
 
 .game-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   margin-top: 18px;
   align-items: stretch;
@@ -229,6 +229,10 @@ body::before {
 
 .builder-card::before {
   background: radial-gradient(circle, rgba(255, 215, 111, 0.2), transparent 62%);
+}
+
+.fruit-card::before {
+  background: radial-gradient(circle, rgba(255, 107, 129, 0.22), transparent 62%);
 }
 
 .future-card::before {
@@ -296,6 +300,10 @@ body::before {
 
 .builder-card .card-footer {
   color: var(--gold);
+}
+
+.fruit-card .card-footer {
+  color: #ff6b81;
 }
 
 @media (max-width: 980px) {
