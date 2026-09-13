@@ -593,7 +593,7 @@ class FruitSliceStudio {
       soundButton.classList.toggle("button-secondary", !isSoundOn);
     });
 
-    // Mouse & Touch Slice Event Handling on Canvas
+    // Mouse, Stylus & Touch Slice Event Handling on Canvas
     const getPos = (e) => {
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.canvas.width / rect.width;
@@ -604,6 +604,12 @@ class FruitSliceStudio {
           y: (e.touches[0].clientY - rect.top) * scaleY,
         };
       }
+      if (e.changedTouches && e.changedTouches.length > 0) {
+        return {
+          x: (e.changedTouches[0].clientX - rect.left) * scaleX,
+          y: (e.changedTouches[0].clientY - rect.top) * scaleY,
+        };
+      }
       return {
         x: (e.clientX - rect.left) * scaleX,
         y: (e.clientY - rect.top) * scaleY,
@@ -611,6 +617,9 @@ class FruitSliceStudio {
     };
 
     const handlePointerDown = (e) => {
+      if (e.cancelable && e.type.startsWith("touch")) {
+        e.preventDefault();
+      }
       this.audio.init();
       this.isDragging = true;
       const pos = getPos(e);
@@ -623,6 +632,9 @@ class FruitSliceStudio {
 
     const handlePointerMove = (e) => {
       if (!this.isDragging) return;
+      if (e.cancelable && e.type.startsWith("touch")) {
+        e.preventDefault();
+      }
       const pos = getPos(e);
       this.dragCurrent = pos;
       this.knifeTrail.push({ x: pos.x, y: pos.y, time: Date.now() });
@@ -649,7 +661,7 @@ class FruitSliceStudio {
       if (this.dragStart) {
         const sliceLine = { p1: this.dragStart, p2: pos };
         const dist = Math.hypot(pos.x - this.dragStart.x, pos.y - this.dragStart.y);
-        if (dist > 25) {
+        if (dist > 18) {
           this.performSlice(sliceLine);
         }
       }
@@ -664,7 +676,26 @@ class FruitSliceStudio {
 
     this.canvas.addEventListener("touchstart", handlePointerDown, { passive: false });
     window.addEventListener("touchmove", handlePointerMove, { passive: false });
-    window.addEventListener("touchend", handlePointerUp);
+    window.addEventListener("touchend", handlePointerUp, { passive: false });
+    window.addEventListener("touchcancel", handlePointerUp, { passive: false });
+
+    // Keyboard Shortcuts for accessibility
+    window.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.key === "2") {
+        this.quickCutHalves();
+      } else if (e.key === "4") {
+        this.quickCutQuarters();
+      } else if (e.key === "8") {
+        this.quickCutEighths();
+      } else if (e.key.toLowerCase() === "r") {
+        this.resetBoard();
+      } else if (e.key.toLowerCase() === "p") {
+        this.openServeModal();
+      } else if (e.key === "Escape") {
+        this.closeServeModal();
+      }
+    });
   }
 
   // --- Quick Cut Presets ---

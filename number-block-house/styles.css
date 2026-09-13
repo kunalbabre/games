@@ -577,6 +577,9 @@ a:focus-visible {
   cursor: pointer;
   font-weight: 900;
   box-shadow: inset 0 0 0 2px var(--cp-sheen);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
   transition: transform 120ms ease, background 120ms ease;
 }
 

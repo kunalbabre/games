@@ -330,21 +330,60 @@ function initGrid() {
     const tile = document.createElement('div');
     tile.className = 'grid-tile';
     tile.dataset.num = i;
+    tile.tabIndex = 0;
+    tile.setAttribute('role', 'button');
+    tile.setAttribute('aria-label', `Spot ${i}`);
 
     const label = document.createElement('span');
     label.className = 'tile-number';
     label.textContent = i;
     tile.appendChild(label);
 
-    tile.onmousedown = (e) => {
+    tile.onpointerdown = (e) => {
       e.preventDefault();
       pushHistory();
       toggleTile(i);
       window.isDragging = true;
+      try {
+        tile.setPointerCapture(e.pointerId);
+      } catch {}
     };
-    tile.onmouseenter = () => {
+
+    tile.onpointerenter = () => {
       if (window.isDragging) toggleTile(i, true);
     };
+
+    tile.onpointermove = (e) => {
+      if (!window.isDragging) return;
+      if (e.pointerType === 'touch') {
+        const target = document.elementFromPoint(e.clientX, e.clientY);
+        const targetTile = target?.closest('.grid-tile');
+        if (targetTile && targetTile.dataset.num) {
+          const num = parseInt(targetTile.dataset.num, 10);
+          toggleTile(num, true);
+        }
+      }
+    };
+
+    tile.onpointerup = (e) => {
+      window.isDragging = false;
+      try {
+        tile.releasePointerCapture(e.pointerId);
+      } catch {}
+    };
+
+    tile.onpointercancel = () => {
+      window.isDragging = false;
+    };
+
+    tile.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        pushHistory();
+        toggleTile(i);
+      }
+    };
+
     grid.appendChild(tile);
   }
 }

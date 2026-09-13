@@ -463,6 +463,9 @@ a {
   grid-template-columns: repeat(10, minmax(0, 1fr));
   grid-template-rows: repeat(10, minmax(0, 1fr));
   gap: 6px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .grid-tile {
@@ -478,8 +481,18 @@ a {
   color: #dbe5ff;
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
   transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   border: 1px solid rgba(170, 198, 255, 0.18);
+  outline: none;
+}
+
+.grid-tile:focus-visible {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px var(--accent-aqua), 0 0 14px rgba(87, 230, 214, 0.5);
+  transform: scale(1.08);
+  z-index: 2;
 }
 
 .grid-tile::before {
