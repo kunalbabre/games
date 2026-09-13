@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      (() => {
+        const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+        const theme =
+          param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veggie Slice Studio</title>
+    <meta
+      name="description"
+      content="Realistic interactive vegetable chopping game with fractions, precision slicing, crisp crunch physics, and sound effects."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="game-header">
+        <div class="header-titles">
+          <p class="eyebrow">Orbit Arcade Kitchen</p>
+          <h1>Veggie Slice Studio</h1>
+          <p class="subtitle">Chop farm-fresh vegetables into halves, quarters & pieces with realistic crunch physics and sound.</p>
+        </div>
+        <div class="header-actions">
+          <div class="score-card" aria-label="Game score">
+            <span>Score</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="score-card" aria-label="Current streak">
+            <span>Streak</span>
+            <strong id="streakValue">0</strong>
+          </div>
+          <div class="score-card" aria-label="Total chops">
+            <span>Chops</span>
+            <strong id="sliceCountValue">0</strong>
+          </div>
+          <button id="soundButton" class="button button-secondary" type="button">Sound On</button>
+          <a class="button button-primary exit-btn" href="../index.html">Exit</a>
+        </div>
+      </header>
+
+      <section class="game-layout">
+        <!-- Left Sidebar: Veggie Pantry & Mode Selector -->
+        <aside class="panel pantry-panel">
+          <div class="section-head">
+            <p class="panel-label">Veggie Garden</p>
+            <h2>Choose a Vegetable</h2>
+          </div>
+
+          <div id="veggieSelector" class="veggie-grid" role="radiogroup" aria-label="Select vegetable">
+            <!-- Rendered dynamically by JS -->
+          </div>
+
+          <div class="mode-section">
+            <p class="panel-label">Cutting Mode</p>
+            <div class="mode-toggle-group">
+              <button id="modeFreeBtn" class="mode-btn is-active" type="button">
+                <strong>Free Chop</strong>
+                <span>Cut any angle & size</span>
+              </button>
+              <button id="modeMissionBtn" class="mode-btn" type="button">
+                <strong>Fraction Quest</strong>
+                <span>Target 2, 4, or 8 parts</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="fraction-mission-card" id="missionCard" hidden>
+            <p class="panel-label">Target Cut</p>
+            <h3 id="targetFractionTitle">Cut into 2 Halves (1/2)</h3>
+            <p id="targetFractionDesc" class="panel-copy">Swipe along the guide to slice the vegetable into 2 equal parts.</p>
+            <div class="target-progress-row">
+              <span id="targetPiecesCount">Pieces: 1 / 2</span>
+              <span id="targetAccuracyBadge" class="accuracy-badge">Guide Active</span>
+            </div>
+          </div>
+
+          <div class="quick-controls">
+            <button id="freshVeggieBtn" class="button button-secondary action-btn" type="button">
+              <span>🥕</span> Fresh Veggie
+            </button>
+            <button id="guideToggleBtn" class="button button-secondary action-btn" type="button">
+              <span>📏</span> Show Guides
+            </button>
+          </div>
+        </aside>
+
+        <!-- Center: Interactive Cutting Board Canvas -->
+        <section class="panel board-panel">
+          <div class="board-toolbar">
+            <div class="current-veggie-badge">
+              <span id="currentVeggieIcon" class="veggie-badge-icon">🍆</span>
+              <div>
+                <strong id="currentVeggieName">Royal Aubergine</strong>
+                <span id="currentVeggieStats">1 whole piece (100%)</span>
+              </div>
+            </div>
+
+            <div class="knife-selector">
+              <span class="toolbar-label">Blade:</span>
+              <button class="knife-btn is-active" data-knife="chef" title="Chef Knife">🔪 Santoku</button>
+              <button class="knife-btn" data-knife="cleaver" title="Heavy Cleaver">🪓 Cleaver</button>
+              <button class="knife-btn" data-knife="laser" title="Laser Katana">⚡ Laser</button>
+            </div>
+
+            <div class="board-actions">
+              <button id="clearBoardBtn" class="button button-secondary mini-btn" type="button">Reset Board</button>
+              <button id="plateBtn" class="button button-primary mini-btn" type="button">🥗 Serve Salad</button>
+            </div>
+          </div>
+
+          <!-- Cutting Board Area -->
+          <div class="cutting-board-wrapper" id="boardWrapper">
+            <canvas id="cuttingCanvas" width="900" height="600"></canvas>
+            
+            <div class="slice-prompt" id="slicePrompt">
+              <span>Swipe or click & drag to chop!</span>
+            </div>
+
+            <!-- Juice / Crisp Particle overlay -->
+            <canvas id="splatterCanvas" width="900" height="600" aria-hidden="true"></canvas>
+
+            <!-- Guide Overlay -->
+            <div id="guideOverlay" class="guide-overlay" aria-hidden="true"></div>
+          </div>
+
+          <div class="status-bar">
+            <div class="quick-cut-row">
+              <span class="toolbar-label">Quick Chop:</span>
+              <button id="cutHalfBtn" class="cut-preset-btn" type="button">🔪 2 Halves (1/2)</button>
+              <button id="cutQuartersBtn" class="cut-preset-btn" type="button">🔪 4 Quarters (1/4)</button>
+              <button id="cutEighthsBtn" class="cut-preset-btn" type="button">🔪 8 Wedges (1/8)</button>
+            </div>
+            <p id="statusMessage" class="status-message" aria-live="polite">
+              Drag your knife across the vegetable to chop it!
+            </p>
+            <div class="cut-feedback" id="cutFeedback" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <!-- Right Sidebar: Fractions & Vegetable Lab Metrics -->
+        <aside class="panel metrics-panel">
+          <div class="section-head">
+            <p class="panel-label">Math & Fractions</p>
+            <h2>Fraction Breakdown</h2>
+          </div>
+
+          <div class="fraction-visualizer" id="fractionVisualizer">
+            <div class="fraction-pie-wrap">
+              <canvas id="fractionPieCanvas" width="160" height="160"></canvas>
+            </div>
+            <div class="fraction-sum" id="fractionEquation">
+              1 = 1/1 Whole
+            </div>
+          </div>
+
+          <div class="pieces-list-card">
+            <div class="pieces-head">
+              <p class="panel-label">Current Pieces (<span id="pieceCountLabel">1</span>)</p>
+            </div>
+            <div class="pieces-scroll" id="piecesList">
+              <!-- Dynamically populated pieces -->
+            </div>
+          </div>
+
+          <div class="veggie-facts-card">
+            <p class="panel-label">Botanical Discovery</p>
+            <h4 id="veggieFactTitle">Aubergine (Solanum melongena)</h4>
+            <p id="veggieFactText" class="fact-text">Also known as eggplant or brinjal, aubergines are botanically berries! They have tender sponge-like flesh that absorbs delicious flavors.</p>
+          </div>
+
+          <div class="stars-card">
+            <p class="panel-label">Chef Mastery</p>
+            <div class="stars-row" id="masteryStars">
+              <span class="star is-earned">★</span>
+              <span class="star is-earned">★</span>
+              <span class="star">★</span>
+            </div>
+            <span id="starCounterText">2 / 3 Stars Earned</span>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <!-- Serving Platter Modal / Celebration -->
+    <div id="serveDialog" class="serve-dialog" role="dialog" aria-modal="true" hidden>
+      <div class="serve-card">
+        <p class="panel-label">Garden Masterpiece</p>
+        <h2 id="serveTitle">Gourmet Garden Salad Bowl!</h2>
+        <div class="platter-preview-wrap">
+          <canvas id="platterCanvas" width="360" height="240"></canvas>
+        </div>
+        <p id="serveDescription">You chopped 8 fresh vegetable portions with culinary precision!</p>
+        <div class="serve-stats-row">
+          <div class="serve-stat">
+            <span>Accuracy</span>
+            <strong id="serveAccuracy">98%</strong>
+          </div>
+          <div class="serve-stat">
+            <span>Fractions</span>
+            <strong id="serveFractions">1/8 Pieces</strong>
+          </div>
+          <div class="serve-stat">
+            <span>Score Bonus</span>
+            <strong id="serveBonus">+150 pts</strong>
+          </div>
+        </div>
+        <div class="serve-actions">
+          <button id="closeServeBtn" class="button button-primary" type="button">Keep Chopping</button>
+          <button id="nextVeggieServeBtn" class="button button-secondary" type="button">Next Veggie 🎃</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
